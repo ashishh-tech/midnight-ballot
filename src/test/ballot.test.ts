@@ -1,5 +1,5 @@
-import { NetworkId, setNetworkId } from "@midnight-ntwrk/midnight-js-network-id";
-import { describe, it, expect, beforeEach } from "vitest";
+// import { NetworkId, setNetworkId } from "@midnight-ntwrk/midnight-js-network-id";
+import { describe, it, expect } from "vitest";
 
 // ============================================================================
 // Midnight Ballot Test Suite
@@ -15,12 +15,11 @@ import { describe, it, expect, beforeEach } from "vitest";
 //
 // Uncomment the import below once the contract is compiled:
 // import { BallotSimulator } from "../../managed/ballot-simulator.js";
+//
+// You would also set the network ID:
+// setNetworkId(NetworkId.Undeployed);
 
 describe("Midnight Ballot Contract (Simulated)", () => {
-  // Set the Midnight network to local simulation mode
-  beforeEach(() => {
-    setNetworkId(NetworkId.Undeployed);
-  });
 
   // -------------------------------------------------------------------------
   // MOCK SIMULATOR (for demonstration before WSL compilation)
