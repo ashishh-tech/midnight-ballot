@@ -1,0 +1,31 @@
+{
+  "name": "midnight-ballot",
+  "version": "1.0.0",
+  "description": "Privacy-preserving anonymous voting contract on Midnight blockchain — private vote, public disclosed count",
+  "type": "module",
+  "scripts": {
+    "compact": "compact compile contracts/ballot.compact managed/",
+    "build": "npm run compact && tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "clean": "rimraf managed/ dist/"
+  },
+  "keywords": [
+    "midnight",
+    "blockchain",
+    "compact",
+    "zero-knowledge",
+    "voting",
+    "privacy"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@midnight-ntwrk/compact-runtime": "^0.31.0",
+    "@midnight-ntwrk/midnight-js-contracts": "^0.31.0",
+    "@midnight-ntwrk/midnight-js-network-id": "^0.31.0",
+    "typescript": "^5.5.0",
+    "vitest": "^2.0.0",
+    "rimraf": "^5.0.0"
+  }
+}
