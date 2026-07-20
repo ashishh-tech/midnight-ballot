@@ -1,0 +1,8 @@
+{
+  "version": 3,
+  "file": "index.js",
+  "sourceRoot": "../../",
+  "sources": ["contracts/ballot.compact"],
+  "names": [],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;EAoBA;;;;;;;;;;;;;;;;MA6CA,AAAA,UAMC;;;;;cANyB,OAAgB;;;;;;;;;;;;;;;;;;yCAAhB,OAAgB;;;;;;;uEAAhB,OAAgB;;;OAMzC;MAKD,AAAA,QAmBC;;;;;;;;;;;;;;;;;;;;;;OAAA;MAGD,AAAA,WAGC;;;;;;;;;;;;;;;;;;;;;;OAAA;;;;;;;;;;;;GACA;EAlFD;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAaA;;;;;;;;;yEAAgC;IAGhC;;;;;;;;;yEAA+B;IAG/B;;;;;;;;;yEAAmC;IAGnC;;;;;;;;;yEAA8B;;;;;;;GA4D7B;EAhDD,AAAA,iBAAoC;;0DAApC,cAAoC;;;;;;;;;;;;;;GAAA;EAGpC,AAAA,gBAAkC;;0DAAlC,aAAkC;;;;;;;;;;;;;;GAAA;EAQlC,AAAA,aAMC,4BANyB,OAAgB;qDAChC;;;;;;;;;;;0HAAM;;IAGd;;;;;;;2HAAqB,OAAK;;yEAAjB;IACT;;;;;;;;;yEAAM;;GACP;EAKD,AAAA,WAmBC;oDAlBQ;;;;;;;;;;;yHAAM;;UAGP,SAA0B;UAC1B,QAAyB;0CAExB,QAAM;;0CAAS,QAAM;;UAKtB,cAA+B,GAAP,QAAM;sBAEhC,cAAY;YACd,KAAQ;MAAR;;;;;;;;;;+FAAA,KAAQ;;;;0EAAA;;YAER,KAAO;MAAP;;;;;;;;;;+FAAA,KAAO;;;;0EAAA;;;GAEV;EAGD,AAAA,cAGC;oDAFQ;;;;;;;;;;;yHAAM;;IACb;;;;;;;;;yEAAM;;GACP;;;;;;;;;;;;;;;;;;;;;;;;;;;;IApED;qCAAA;;;;;;;;;;;0GAAgC;KAAA;IAGhC;qCAAA;;;;;;;;;;;0GAA+B;KAAA;IAG/B;qCAAA;;;;;;;;;;;0GAAmC;KAAA;IAGnC;qCAAA;;;;;;;;;;;0GAA8B;KAAA;;;;;;;;;;;;"
+}

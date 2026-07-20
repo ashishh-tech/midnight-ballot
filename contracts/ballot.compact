@@ -20,6 +20,8 @@
 
 pragma language_version >= 0.23;
 
+import CompactStandardLibrary;
+
 // ---------------------------------------------------------------------------
 // SECTION 1: PUBLIC LEDGER STATE
 // ---------------------------------------------------------------------------
@@ -29,32 +31,23 @@ pragma language_version >= 0.23;
 // ---------------------------------------------------------------------------
 
 // Total number of "yes" votes — publicly visible to everyone.
-// Uses Midnight's built-in Counter type for atomic increments.
 export ledger yesVotes: Counter;
 
 // Total number of "no" votes — also publicly visible.
 export ledger noVotes: Counter;
 
 // The topic being voted on — stored as a 32-byte hash on-chain.
-// Everyone can see WHAT is being voted on.
 export ledger topicHash: Bytes<32>;
 
 // Whether voting is currently open (true) or closed (false).
 export ledger isOpen: Boolean;
 
-// Stores the most recently disclosed vote choice (for the revealMyChoice demo).
-// This starts empty and is only populated when a voter CHOOSES to reveal.
-export ledger lastDisclosedChoice: Uint<32>;
 
 // ---------------------------------------------------------------------------
 // SECTION 2: PRIVATE WITNESSES
 // ---------------------------------------------------------------------------
 // Witnesses are private, off-chain callback functions. They return data that
-// lives ONLY on the voter's local machine. The blockchain never sees these
-// values — they're used inside ZK circuits to generate proofs.
-//
-// In Compact, you DECLARE the witness signature here, but the actual
-// implementation is provided in TypeScript at runtime.
+// lives ONLY on the voter's local machine.
 // ---------------------------------------------------------------------------
 
 // Returns a secret identifier for the voter (e.g., derived from their wallet).
@@ -62,89 +55,48 @@ export ledger lastDisclosedChoice: Uint<32>;
 witness getVoterSecret(): Bytes<32>;
 
 // Returns the voter's private choice: 1 = Yes, 0 = No.
-// This is also NEVER sent to the blockchain — it stays private.
 witness getVoteChoice(): Uint<32>;
+
 
 // ---------------------------------------------------------------------------
 // SECTION 3: CIRCUITS (ZK-Proven Logic)
 // ---------------------------------------------------------------------------
-// Circuits are the functions that execute on Midnight. Each circuit call
-// generates a zero-knowledge proof that the logic was executed correctly,
-// WITHOUT revealing the private witness values used inside.
-// ---------------------------------------------------------------------------
 
 /// Opens voting for a given topic. Sets the topic hash and enables voting.
-/// Can only be called when voting is currently closed.
 export circuit openVoting(topic: Bytes<32>): [] {
-  // Guard: voting must not already be open
   assert(!isOpen, "Voting is already open");
 
-  // Store the topic hash on the PUBLIC ledger — everyone can see the topic
-  topicHash = topic;
-
-  // Open voting
+  // We explicitly disclose the topic parameter to store it on the public ledger
+  topicHash = disclose(topic);
   isOpen = true;
 }
 
-/// Casts an anonymous vote. The voter's identity and specific choice are
-/// PRIVATE (witness data). Only the aggregate counters are updated on-chain.
-///
-/// This is the key privacy feature: the ZK proof guarantees the voter made
-/// a valid choice (0 or 1) and that the correct counter was incremented,
-/// but reveals NOTHING about WHO voted or WHAT they voted for.
+/// Casts a vote. The voter's identity remains completely PRIVATE.
+/// The ZK proof guarantees the voter made a valid choice (0 or 1) and that 
+/// the correct counter was incremented, without revealing WHO voted.
 export circuit castVote(): [] {
-  // Guard: voting must be open
   assert(isOpen, "Voting is not open");
 
   // --- PRIVATE ZONE ---
-  // These values come from the voter's local machine via witness functions.
-  // They exist only inside this ZK circuit and are NEVER published on-chain.
-  const _secret = getVoterSecret();   // Voter's private identifier
+  const _secret = getVoterSecret();   // Voter's private identifier (remains hidden!)
   const choice  = getVoteChoice();    // Voter's private choice (0 or 1)
 
-  // Validate the choice is binary (0 = No, 1 = Yes)
   assert(choice == 0 || choice == 1, "Vote must be 0 (No) or 1 (Yes)");
 
   // --- PUBLIC ZONE ---
-  // Update the PUBLIC ledger counters. The ZK proof guarantees exactly one
-  // counter is incremented, but an observer cannot tell which one this
-  // particular voter incremented.
-  if (choice == 1) {
+  // To update public counters based on a choice, the choice itself must be 
+  // disclosed in this specific design. (The voter's identity remains private).
+  const publicChoice = disclose(choice);
+
+  if (publicChoice == 1) {
     yesVotes.increment(1);
   } else {
     noVotes.increment(1);
   }
 }
 
-/// Allows a voter to VOLUNTARILY reveal their vote choice.
-///
-/// THIS IS THE disclose() DEMO: By default, witness data is private.
-/// The disclose() function is the ONLY way to deliberately move private
-/// data onto the public ledger. It's an explicit, conscious decision —
-/// not an accident.
-///
-/// Use case: A voter wants to prove they voted a certain way (e.g.,
-/// a politician proving transparency, or an audit scenario).
-export circuit revealMyChoice(): [] {
-  // Get the private vote choice from the witness
-  const choice = getVoteChoice();
-
-  // *** disclose() — THE KEY FUNCTION ***
-  //
-  // Without disclose(), `choice` would remain private forever.
-  // By wrapping it in disclose(), we EXPLICITLY move it to the public ledger.
-  //
-  // This is Midnight's core privacy primitive: nothing becomes public
-  // unless you deliberately disclose() it.
-  lastDisclosedChoice = disclose(choice);
-}
-
 /// Closes voting. After this, no more votes can be cast.
-/// The final tally (yesVotes, noVotes) remains visible on the ledger.
 export circuit closeVoting(): [] {
-  // Guard: voting must be open to close it
   assert(isOpen, "Voting is not open");
-
-  // Close voting — the tallies are now final and publicly verifiable
   isOpen = false;
 }

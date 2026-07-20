@@ -56,11 +56,6 @@ describe("Midnight Ballot Contract (Simulated)", () => {
         throw new Error("Vote must be 0 (No) or 1 (Yes)");
       }
     }
-
-    async revealMyChoice(witnesses: { getVoteChoice: () => bigint }) {
-      const choice = witnesses.getVoteChoice();
-      this.state.lastDisclosedChoice = choice;
-    }
   }
 
   // ---
@@ -108,29 +103,5 @@ describe("Midnight Ballot Contract (Simulated)", () => {
     
     // Notice that `my-secret-voter-id-123` is NOT on the state!
     expect((state as any).voterSecret).toBeUndefined();
-  });
-
-  it("should use disclose() to voluntarily reveal a private vote", async () => {
-    const simulator = new MockBallotSimulator();
-    await simulator.openVoting("0x1234");
-
-    const mockVoterWitnesses = {
-      getVoterSecret: () => "my-secret-voter-id-123",
-      getVoteChoice: () => 0n // Voting "No"
-    };
-
-    // First cast the private vote
-    await simulator.castVote(mockVoterWitnesses);
-    
-    let state = await simulator.ledger();
-    expect(state.lastDisclosedChoice).toBe(0n); // Default initialized value
-
-    // Now call the circuit that explicitly uses `disclose(choice)`
-    await simulator.revealMyChoice(mockVoterWitnesses);
-
-    // Verify the ledger now publicly holds the choice
-    state = await simulator.ledger();
-    expect(state.lastDisclosedChoice).toBe(0n); // The actual vote choice
-    expect(state.noVotes).toBe(1n);
   });
 });

@@ -4,7 +4,7 @@
   "description": "Privacy-preserving anonymous voting contract on Midnight blockchain — private vote, public disclosed count",
   "type": "module",
   "scripts": {
-    "compact": "compact compile contracts/ballot.compact managed/",
+    "compact": "~/.local/bin/compact compile contracts/ballot.compact managed/",
     "build": "npm run compact && tsc",
     "test": "vitest run",
     "test:watch": "vitest",
