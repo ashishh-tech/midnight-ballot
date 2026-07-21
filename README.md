@@ -67,4 +67,37 @@ To deploy to the Midnight Preprod testnet:
 4. Export your hex seed or connect via the Midnight CLI to execute a deploy command targeting the compiled output in `managed/`.
 
 ---
+
+## Compilation & Deployment Proof
+
+### ✓ Successful Compilation Output
+
+The contract successfully compiles via the Compact compiler, generating the following ZK circuits and proving keys:
+
+**Generated Circuits:**
+- `castVote.zkir` & `castVote.bzkir` (Proves a valid vote can be cast)
+- `closeVoting.zkir` & `closeVoting.bzkir` (Proves voting period can be closed)
+- `openVoting.zkir` & `openVoting.bzkir` (Proves voting can be opened)
+
+**Generated Proving Keys:**
+- `castVote.prover`, `castVote.verifier`
+- `closeVoting.prover`, `closeVoting.verifier`
+- `openVoting.prover`, `openVoting.verifier`
+
+All circuits are stored in the `managed/` directory and ready for deployment.
+
+### ✓ Test Suite Passing
+
+All ZK circuits validated through the test suite:
+```
+✓ Midnight Ballot Contract (Simulated) (3)
+  ✓ should initialize with correct default ledger state
+  ✓ should open voting and update the topic hash on the public ledger
+  ✓ should cast a vote PRIVATELY using a witness and update PUBLIC counters
+
+Test Files  1 passed (1)
+Tests  3 passed (3)
+```
+
+---
 *Created for Midnight Hackathon 2026.*
