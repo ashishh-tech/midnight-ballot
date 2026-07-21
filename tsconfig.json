@@ -8,12 +8,15 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "outDir": "./dist",
-    "rootDir": "./src",
     "declaration": true,
     "resolveJsonModule": true,
     "allowImportingTsExtensions": false,
     "noEmit": false
   },
-  "include": ["src/**/*", "managed/**/*"],
+  "ts-node": {
+    "esm": true,
+    "experimentalEsm": true
+  },
+  "include": ["src/**/*", "scripts/**/*", "managed/**/*"],
   "exclude": ["node_modules", "dist"]
 }
