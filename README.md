@@ -60,11 +60,13 @@ npm run test
 
 ### Deployment to Testnet
 
-To deploy to the Midnight Preprod testnet:
-1. Ensure your Docker-based Proof Server is running.
-2. Create a Midnight compatible wallet (e.g., Lace) on the Preprod network.
-3. Obtain tNIGHT and tDUST from the Midnight faucet.
-4. Export your hex seed or connect via the Midnight CLI to execute a deploy command targeting the compiled output in `managed/`.
+To deploy to the Midnight Preprod testnet, follow the [Deployment Guide](DEPLOYMENT_GUIDE.md) for step-by-step instructions, including:
+- Setting up a local proof server with Docker
+- Configuring your wallet and testnet tokens
+- Running the deployment script to get your contract address
+- Verifying deployment on the block explorer
+
+See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) for complete instructions.
 
 ---
 
