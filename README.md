@@ -144,7 +144,7 @@ For full testnet deployment with actual transactions, see [DEPLOYMENT_GUIDE.md](
 
 ### 🚀 Live Demo
 
-**Frontend:** https://frontend-1yv1mfsvl-stellar-project.vercel.app
+**Frontend:** https://frontend-mwiwqpx7e-stellar-project.vercel.app
 
 Deploy frontend to Vercel:
 
