@@ -58,6 +58,20 @@ Run the test suite to verify the simulated zero-knowledge circuits:
 npm run test
 ```
 
+### Frontend
+
+A React/Next.js frontend is available in the `frontend/` directory for wallet integration and circuit execution. See [frontend/README.md](frontend/README.md) for setup and deployment.
+
+To run locally:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Then open [http://localhost:3000](http://localhost:3000)
+
 ### Deployment to Testnet
 
 To deploy to the Midnight Preprod testnet, follow the [Deployment Guide](DEPLOYMENT_GUIDE.md) for step-by-step instructions, including:
@@ -118,3 +132,26 @@ The contract has been successfully compiled with all ZK circuits generated and i
 - Docker proof server integration ready
 
 For full testnet deployment with actual transactions, see [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md).
+
+## Level 2: Interactive Frontend
+
+### ✅ Frontend Features
+
+- **Wallet Connection**: Connect/disconnect Lace wallet (Preprod)
+- **Vote Interface**: Cast private votes with witness data
+- **Circuit Execution**: Execute `castVote` circuit from browser
+- **Privacy Proof**: Demonstrates public vs private state
+
+### 🚀 Live Demo
+
+Deploy frontend to Vercel:
+
+```bash
+cd frontend
+vercel deploy
+```
+
+Share the Vercel URL to judges with demo of:
+1. Wallet connection
+2. Vote casting
+3. Transaction hash
