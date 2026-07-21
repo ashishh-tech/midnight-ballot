@@ -1,0 +1,22 @@
+{
+  "name": "midnight-ballot-frontend",
+  "version": "1.0.0",
+  "description": "Frontend for Midnight Ballot voting contract",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "export": "next export"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "next": "^14.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.5.0"
+  }
+}
