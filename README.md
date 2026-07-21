@@ -144,6 +144,8 @@ For full testnet deployment with actual transactions, see [DEPLOYMENT_GUIDE.md](
 
 ### 🚀 Live Demo
 
+**Frontend:** https://frontend-1yv1mfsvl-stellar-project.vercel.app
+
 Deploy frontend to Vercel:
 
 ```bash
@@ -155,3 +157,18 @@ Share the Vercel URL to judges with demo of:
 1. Wallet connection
 2. Vote casting
 3. Transaction hash
+
+### 🎬 Demo Video
+
+**Demo Video Link:** 
+
+[Paste your YouTube/video link here]
+
+---
+
+*Recording should show:*
+- Opening the live frontend
+- Connecting Lace wallet
+- Selecting a vote (Yes/No)
+- Clicking "Cast Vote Privately"
+- Confirming the transaction hash
