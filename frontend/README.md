@@ -20,10 +20,10 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Deployment
 
-Deploy to Vercel:
+Deploy to Netlify:
 
 ```bash
-vercel deploy
+npx netlify deploy --prod
 ```
 
 Or build and export as static site:

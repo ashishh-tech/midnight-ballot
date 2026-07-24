@@ -167,7 +167,7 @@ For step-by-step instructions on deploying via proof-server and SDK, see [DEPLOY
 
 *(Note: `netlify.toml` is configured in both root and `frontend/` directories for automatic setup)*
 
-Share the Vercel URL to judges with demo of:
+Share the Netlify URL to judges with demo of:
 1. Wallet connection
 2. Vote casting
 3. Transaction hash
