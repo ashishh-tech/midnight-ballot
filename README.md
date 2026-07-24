@@ -1,24 +1,33 @@
 # Midnight Ballot 🗳️
 
+[![Test & Build CI](https://github.com/ashishh-tech/midnight-ballot/actions/workflows/test.yml/badge.svg)](https://github.com/ashishh-tech/midnight-ballot/actions/workflows/test.yml)
+
 An anonymous, privacy-preserving voting smart contract built for the Midnight blockchain. 
 
-## Initial Product Idea
+## Product Proposal & Initial Product Idea
 
-**Anonymous voting contract — private vote, public disclosed count.**
-This project is a privacy-preserving voting contract on Midnight. Each voter's identity and individual vote choice remain private (witness data), while only the aggregate vote count is disclosed publicly via `disclose()`. This lets communities run transparent polls — proving the final tally is correct — without ever revealing who voted for what. Future iterations could add voter eligibility checks and prevent double-voting using nullifiers.
+**Anonymous Feedback & Survey / Voting Contract — Private Vote, Public Disclosed Count.**
+This project is an anonymous voting contract built on the Midnight blockchain. Each voter's identity and individual vote choice remain strictly private (off-chain witness data), while only the aggregate vote count is disclosed publicly on the ledger via `disclose()`. This lets communities run transparent polls — mathematically proving the final tally is correct using Zero-Knowledge proofs — without ever revealing who voted for what.
 
-## Architecture: Public vs. Private State
+---
 
-This project demonstrates the core power of Midnight's dual-state architecture:
+## Privacy Model: What an Observer Can & Cannot Learn
 
-### 1. Public Ledger (On-Chain)
-The `yesVotes`, `noVotes`, and `topicHash` are stored on the public ledger. Anyone on the Midnight network can read these values and verify the current tally.
+Midnight's dual-state architecture clearly separates public ledger state from private witness data. Here is what an outside observer or network node can and cannot learn from the blockchain:
 
-### 2. Private Witness (Off-Chain)
-The voter's identity (`getVoterSecret`) and their specific vote (`getVoteChoice`) are passed as **witnesses**. Witness data lives entirely off-chain on the voter's machine. The blockchain never sees this data — it only sees the Zero-Knowledge (ZK) proof that the voter followed the rules.
+### 🔍 What an Observer CAN Learn (Public Ledger State)
+- **Aggregate Tally:** The total number of `yesVotes` and `noVotes` cast on-chain.
+- **Voting Topic:** The 32-byte hash (`topicHash`) of the poll topic.
+- **Voting Status:** Whether voting is currently open or closed (`isOpen`).
+- **Transaction Proofs:** Valid Zero-Knowledge (ZK) proofs confirming that votes were cast according to the smart contract rules.
 
-### 3. The `disclose()` Boundary
-By default, witness data stays private forever. If a voter wants to voluntarily reveal their vote, they call a circuit (`revealMyChoice`) that explicitly uses the `disclose()` function. This is the only way private data becomes public, demonstrating that privacy on Midnight is secure by default, and transparency is opt-in.
+### 🔒 What an Observer CANNOT Learn (Private Witness Data)
+- **Voter Identity:** The voter's secret identifier (`getVoterSecret`) NEVER leaves the voter's device and is never stored on the public blockchain.
+- **Individual Vote Selection:** An observer CANNOT determine whether a specific voter address voted "Yes" or "No".
+- **Voter IP / Metadata:** Witness data is evaluated locally off-chain before submitting only the zero-knowledge proof.
+
+### 🛡️ The `disclose()` Boundary
+By default, witness data stays private forever. If a voter wants to voluntarily reveal their vote, they execute a circuit (`revealMyChoice`) that explicitly uses the `disclose()` function. Privacy on Midnight is secure by default, and transparency is strictly opt-in.
 
 ---
 
@@ -102,17 +111,18 @@ The contract successfully compiles via the Compact compiler, generating the foll
 
 All circuits are stored in the `managed/` directory and ready for deployment.
 
-### ✓ Test Suite Passing
+### ✓ Test Suite Passing (4/4 Tests)
 
 All ZK circuits validated through the test suite:
 ```
-✓ Midnight Ballot Contract (Simulated) (3)
+✓ Midnight Ballot Contract (Simulated) (4)
   ✓ should initialize with correct default ledger state
   ✓ should open voting and update the topic hash on the public ledger
   ✓ should cast a vote PRIVATELY using a witness and update PUBLIC counters
+  ✓ should close voting and prevent subsequent vote casting
 
 Test Files  1 passed (1)
-Tests  3 passed (3)
+Tests  4 passed (4)
 ```
 
 ---
