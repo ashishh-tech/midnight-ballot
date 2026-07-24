@@ -56,6 +56,11 @@ describe("Midnight Ballot Contract (Simulated)", () => {
         throw new Error("Vote must be 0 (No) or 1 (Yes)");
       }
     }
+
+    async closeVoting() {
+      if (!this.state.isOpen) throw new Error("Voting is not open");
+      this.state.isOpen = false;
+    }
   }
 
   // ---
@@ -103,5 +108,21 @@ describe("Midnight Ballot Contract (Simulated)", () => {
     
     // Notice that `my-secret-voter-id-123` is NOT on the state!
     expect((state as any).voterSecret).toBeUndefined();
+  });
+
+  it("should close voting and prevent subsequent vote casting", async () => {
+    const simulator = new MockBallotSimulator();
+    await simulator.openVoting("0x5678");
+    await simulator.closeVoting();
+
+    const state = await simulator.ledger();
+    expect(state.isOpen).toBe(false);
+
+    const mockWitnesses = {
+      getVoterSecret: () => "voter-secret",
+      getVoteChoice: () => 1n
+    };
+
+    await expect(simulator.castVote(mockWitnesses)).rejects.toThrow("Voting is not open");
   });
 });
