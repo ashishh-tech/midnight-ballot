@@ -19,16 +19,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
 
       - name: Install Root Dependencies
-        run: npm ci || npm install
+        run: npm install --legacy-peer-deps
 
       - name: Run Contract Unit Tests
-        run: npm run test
+        run: npx vitest run
 
       - name: Install Frontend Dependencies
-        run: npm --prefix frontend ci || npm --prefix frontend install
+        run: cd frontend && npm install --legacy-peer-deps
 
       - name: Build Frontend Next.js App
-        run: npm --prefix frontend run build
+        run: cd frontend && npm run build
