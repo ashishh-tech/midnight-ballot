@@ -1,3 +1,4 @@
 {
+  "rootDirectory": "frontend",
   "buildCommand": "npm run build"
 }
