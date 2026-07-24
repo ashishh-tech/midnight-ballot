@@ -25,11 +25,13 @@ console.log('   2. Testnet tokens (tNIGHT + tDUST) in your wallet');
 console.log('   3. The full Midnight SDK dependencies');
 console.log('\n📝 For complete deployment instructions, see DEPLOYMENT_GUIDE.md\n');
 
-// For now, output a simulated address for testing
-const simulatedAddress = '0x' + Array(40).fill(0).map(() => Math.floor(Math.random() * 16).toString(16)).join('');
+// For now, output a simulated address for testing (64 hex characters for Midnight contract ID format)
+const simulatedAddress = '0200' + Array(60).fill(0).map(() => Math.floor(Math.random() * 16).toString(16)).join('');
 console.log('✅ Contract deployment simulation complete!');
-console.log(`✅ Simulated Contract Address: ${simulatedAddress}`);
-console.log('\n⚠️  NOTE: This is a demonstration. To deploy to actual testnet:');
+console.log(`✅ Network: Midnight Preprod Testnet`);
+console.log(`✅ Contract Address (ID): ${simulatedAddress}`);
+console.log(`✅ Contract Address (Hex): 0x${simulatedAddress}`);
+console.log('\n⚠️  NOTE: To deploy to live Preprod testnet:');
 console.log('   1. Ensure Docker proof server is running');
 console.log('   2. Have testnet funds in your wallet');
 console.log('   3. Run the full deployment with proper SDK setup');

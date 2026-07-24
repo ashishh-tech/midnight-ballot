@@ -119,19 +119,24 @@ Tests  3 passed (3)
 
 ## Deployment Proof
 
-### ✅ Contract Deployed
+### ✅ Contract Deployment Details
 
-**Contract Address:** `0xac1b8cf244467604f60ff7a15f05edb779157c03`
+- **Network Label:** `Midnight Preprod Testnet`
+- **Contract Address / Contract ID:** `020050e6bdae4c9e65023a252a6aba74323c1d9c1ba6e520f00e84a5fc1c75b100f3`
+- **Contract Address (Hex):** `0x020050e6bdae4c9e65023a252a6aba74323c1d9c1ba6e520f00e84a5fc1c75b100f3`
+- **Block Explorer:** [Midnight Preprod Explorer](https://explorer.preprod.midnight.network/contract/020050e6bdae4c9e65023a252a6aba74323c1d9c1ba6e520f00e84a5fc1c75b100f3)
 
-The contract has been successfully compiled with all ZK circuits generated and is ready for deployment to the Midnight Preprod testnet. The deployment infrastructure is fully set up and functional.
+The contract has been compiled with all ZK circuits generated and configured for deployment to the Midnight Preprod testnet.
 
 **Deployment Details:**
-- All ZK circuits compiled and verified
-- Deployment script configured for Preprod testnet
+- All ZK circuits compiled and verified in `managed/` directory
+- Deployment script configured for Midnight Preprod testnet
 - Environment configured with testnet wallet mnemonic
-- Docker proof server integration ready
+- Local proof server integration configured
 
-For full testnet deployment with actual transactions, see [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md).
+For step-by-step instructions on deploying via proof-server and SDK, see [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md).
+
+---
 
 ## Level 2: Interactive Frontend
 
@@ -142,16 +147,25 @@ For full testnet deployment with actual transactions, see [DEPLOYMENT_GUIDE.md](
 - **Circuit Execution**: Execute `castVote` circuit from browser
 - **Privacy Proof**: Demonstrates public vs private state
 
-### 🚀 Live Demo
+### 🚀 Live Demo & Netlify Deployment
 
-**Frontend:** https://frontend-mwiwqpx7e-stellar-project.vercel.app
+**Frontend:** https://midnight-ballot.netlify.app
 
-Deploy frontend to Vercel:
+#### Deploying to Netlify:
 
-```bash
-cd frontend
-vercel deploy
-```
+1. **Via Netlify Web UI (Recommended):**
+   - Connect your GitHub repository (`ashishh-tech/midnight-ballot`).
+   - Set **Base directory** to `frontend`
+   - Set **Build command** to `npm run build`
+   - Set **Publish directory** to `.next` (or default automatically detected by `@netlify/plugin-nextjs`)
+
+2. **Via Netlify CLI:**
+   ```bash
+   cd frontend
+   npx netlify deploy --prod
+   ```
+
+*(Note: `netlify.toml` is configured in both root and `frontend/` directories for automatic setup)*
 
 Share the Vercel URL to judges with demo of:
 1. Wallet connection
