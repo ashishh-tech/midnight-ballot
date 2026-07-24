@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface WalletState {
   isConnected: boolean;
@@ -14,7 +14,12 @@ interface VoteStats {
 }
 
 export default function BallotApp() {
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [wallet, setWallet] = useState<WalletState>({ isConnected: false });
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
   const [activeTab, setActiveTab] = useState<'vote' | 'audit' | 'ledger' | 'admin'>('vote');
   const [voteChoice, setVoteChoice] = useState<'yes' | 'no'>('yes');
   const [isVoting, setIsVoting] = useState(false);
@@ -116,6 +121,14 @@ export default function BallotApp() {
         </div>
 
         <div style={styles.headerRight}>
+          <button
+            onClick={() => setTheme(prev => prev === 'dark' ? 'light' : 'dark')}
+            style={styles.themeToggleBtn}
+            title="Toggle Light/Dark Theme"
+          >
+            {theme === 'dark' ? '🌙 Dark' : '☀️ Light'}
+          </button>
+
           <div style={styles.networkBadge}>
             <span style={styles.statusDot}></span>
             <span>Preprod Testnet</span>
@@ -490,6 +503,21 @@ const styles = {
     borderRadius: '50%',
     backgroundColor: '#10b981',
     boxShadow: '0 0 8px #10b981'
+  } as React.CSSProperties,
+
+  themeToggleBtn: {
+    padding: '6px 12px',
+    fontSize: '12px',
+    fontWeight: 700,
+    color: 'var(--text-main)',
+    backgroundColor: 'var(--bg-card-hover)',
+    border: '1px solid var(--border-color)',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '6px',
+    transition: 'all 0.2s'
   } as React.CSSProperties,
 
   connectBtn: {
