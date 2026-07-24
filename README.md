@@ -186,11 +186,11 @@ Share the Netlify URL to judges with demo of:
 
 **Demo Video Link:** 
 
-[Paste your YouTube/video link here]
+[https://youtu.be/w3B2KKkBnPw]
 
 ---
 
-*Recording should show:*
+*Recording shows:*
 - Opening the live frontend
 - Connecting Lace wallet
 - Selecting a vote (Yes/No)
