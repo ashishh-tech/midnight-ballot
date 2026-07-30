@@ -8,6 +8,6 @@ declare module '@midnight-ntwrk/dapp-connector-api' {
   }
 }
 
-declare module '@midnight-ntwrk/midnight-js-network-provider' {
+declare module '@midnight-ntwrk/midnight-js-network-id' {
   export type NetworkId = 'undeployed' | 'devnet' | 'testnet' | 'mainnet' | string;
 }

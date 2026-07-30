@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import type { DAppConnectorAPI } from '@midnight-ntwrk/dapp-connector-api';
-import type { NetworkId } from '@midnight-ntwrk/midnight-js-network-provider';
+import type { NetworkId } from '@midnight-ntwrk/midnight-js-network-id';
 
 // ============================================================================
 // Midnight Ballot — Level 2 Interactive Frontend & Wallet Integration
@@ -28,11 +28,6 @@ export interface MidnightWalletInstance {
 
 declare global {
   interface Window {
-    midnight?: {
-      mnLace?: DAppConnectorAPI;
-      lace?: DAppConnectorAPI;
-      [key: string]: any;
-    };
     cardano?: any;
   }
 }
