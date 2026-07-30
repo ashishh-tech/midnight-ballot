@@ -9,7 +9,10 @@
     "export": "next export"
   },
   "dependencies": {
-    "@midnight-ntwrk/dapp-connector-api": "^1.0.0",
+    "@midnight-ntwrk/dapp-connector-api": "latest",
+    "@midnight-ntwrk/midnight-js-network-provider": "latest",
+    "@midnight-ntwrk/midnight-js-contracts": "latest",
+    "@midnight-ntwrk/compact-runtime": "latest",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "next": "^14.0.0"
