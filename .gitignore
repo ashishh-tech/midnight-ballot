@@ -3,6 +3,7 @@ node_modules/
 
 # Build output
 dist/
+*.tsbuildinfo
 
 # Environment variables (may contain wallet seed)
 .env

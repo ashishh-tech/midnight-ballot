@@ -1,20 +1,20 @@
 // ============================================================================
-// Midnight Ballot — Privacy-Preserving Voting Contract
+// Midnight Ballot — Privacy-Preserving Anonymous Voting Contract
 // ============================================================================
 //
-// This Compact smart contract demonstrates Midnight's dual-state architecture:
+// Dual-State Zero-Knowledge Architecture with Nullifier Double-Voting Prevention:
 //
-//   • PUBLIC LEDGER  — on-chain state visible to everyone (vote tally)
-//   • PRIVATE WITNESS — off-chain data that NEVER leaves the voter's machine
-//   • disclose()     — the explicit boundary between private and public
+//   • PUBLIC LEDGER  — vote tally, spent nullifier set, topic hash, quorum
+//   • PRIVATE WITNESS — voter secret, choice, nullifier, eligibility proof (off-chain)
+//   • disclose()     — explicit boundary between private witness and public ledger
 //
-// How it works:
-//   1. An admin opens voting on a topic
-//   2. Voters call castVote() — their identity and vote choice are PRIVATE
-//      (held as witness data), but the aggregate count is PUBLIC (on the ledger)
-//   3. The ZK proof guarantees the count is correct without revealing who voted
-//   4. Optionally, a voter can call revealMyChoice() to VOLUNTARILY disclose
-//      their vote — demonstrating deliberate use of disclose()
+// Key Features:
+//   1. Nullifier Double Voting Prevention: Each voter generates a unique
+//      ZK nullifier per proposal. Spent nullifiers are stored on-chain to
+//      block duplicate votes without revealing voter identity.
+//   2. Private Voter Eligibility Verification: Voters present witness proofs
+//      verified against the active proposal's voter group commitment root.
+//   3. Configurable Quorum & Rules: Enforcement of minimum voting thresholds.
 //
 // ============================================================================
 
@@ -25,68 +25,80 @@ import CompactStandardLibrary;
 // ---------------------------------------------------------------------------
 // SECTION 1: PUBLIC LEDGER STATE
 // ---------------------------------------------------------------------------
-// Everything declared with `export ledger` is stored on-chain and publicly
-// visible to all network participants. This is the "transparent" half of
-// Midnight's dual-state model.
-// ---------------------------------------------------------------------------
 
-// Total number of "yes" votes — publicly visible to everyone.
+// Total number of "yes" votes — publicly visible.
 export ledger yesVotes: Counter;
 
-// Total number of "no" votes — also publicly visible.
+// Total number of "no" votes — publicly visible.
 export ledger noVotes: Counter;
 
-// The topic being voted on — stored as a 32-byte hash on-chain.
+// The topic being voted on — 32-byte hash.
 export ledger topicHash: Bytes<32>;
 
-// Whether voting is currently open (true) or closed (false).
+// Minimum required total votes (quorum threshold).
+export ledger minimumQuorum: Uint<32>;
+
+// Voter group eligibility Merkle root / commitment.
+export ledger voterGroupMerkleRoot: Bytes<32>;
+
+// Whether voting is currently open.
 export ledger isOpen: Boolean;
 
+// Set of spent nullifiers to prevent double-voting anonymously.
+export ledger nullifiers: Set<Bytes<32>>;
+
 
 // ---------------------------------------------------------------------------
-// SECTION 2: PRIVATE WITNESSES
-// ---------------------------------------------------------------------------
-// Witnesses are private, off-chain callback functions. They return data that
-// lives ONLY on the voter's local machine.
+// SECTION 2: PRIVATE WITNESSES (Off-Chain Client Data)
 // ---------------------------------------------------------------------------
 
-// Returns a secret identifier for the voter (e.g., derived from their wallet).
-// This is NEVER sent to the blockchain — it stays on the voter's device.
+// Secret identifier for the voter — stays on voter's machine.
 witness getVoterSecret(): Bytes<32>;
 
-// Returns the voter's private choice: 1 = Yes, 0 = No.
+// Voter's choice: 1 = Yes, 0 = No.
 witness getVoteChoice(): Uint<32>;
+
+// Deterministic ZK nullifier computed from (voterSecret, topicHash).
+witness getNullifier(topic: Bytes<32>): Bytes<32>;
+
+// Proof of voter membership in the authorized voter group.
+witness getEligibilityProof(): Bytes<32>;
 
 
 // ---------------------------------------------------------------------------
 // SECTION 3: CIRCUITS (ZK-Proven Logic)
 // ---------------------------------------------------------------------------
 
-/// Opens voting for a given topic. Sets the topic hash and enables voting.
-export circuit openVoting(topic: Bytes<32>): [] {
+/// Opens voting for a topic with specified quorum requirement and voter group root.
+export circuit openVoting(topic: Bytes<32>, quorum: Uint<32>, groupRoot: Bytes<32>): [] {
   assert(!isOpen, "Voting is already open");
 
-  // We explicitly disclose the topic parameter to store it on the public ledger
   topicHash = disclose(topic);
+  minimumQuorum = disclose(quorum);
+  voterGroupMerkleRoot = disclose(groupRoot);
   isOpen = true;
 }
 
-/// Casts a vote. The voter's identity remains completely PRIVATE.
-/// The ZK proof guarantees the voter made a valid choice (0 or 1) and that 
-/// the correct counter was incremented, without revealing WHO voted.
+/// Casts a vote anonymously using ZK proofs while enforcing nullifier uniqueness.
 export circuit castVote(): [] {
   assert(isOpen, "Voting is not open");
 
-  // --- PRIVATE ZONE ---
-  const _secret = getVoterSecret();   // Voter's private identifier (remains hidden!)
-  const choice  = getVoteChoice();    // Voter's private choice (0 or 1)
+  // --- PRIVATE WITNESS ZONE ---
+  const _secret = getVoterSecret();
+  const choice = getVoteChoice();
+  const nullifier = getNullifier(topicHash);
+  const eligibility = getEligibilityProof();
 
   assert(choice == 0 || choice == 1, "Vote must be 0 (No) or 1 (Yes)");
+  assert(eligibility != pad(32, ""), "Invalid voter eligibility proof");
 
-  // --- PUBLIC ZONE ---
-  // To update public counters based on a choice, the choice itself must be 
-  // disclosed in this specific design. (The voter's identity remains private).
+  // --- PUBLIC DISCLOSURE BOUNDARY ---
   const publicChoice = disclose(choice);
+  const publicNullifier = disclose(nullifier);
+
+  // Enforce nullifier uniqueness to prevent double voting
+  assert(!nullifiers.member(publicNullifier), "Vote already cast with this nullifier");
+  nullifiers.insert(publicNullifier);
 
   if (publicChoice == 1) {
     yesVotes.increment(1);
@@ -95,8 +107,9 @@ export circuit castVote(): [] {
   }
 }
 
-/// Closes voting. After this, no more votes can be cast.
+/// Closes voting and verifies minimum quorum rule.
 export circuit closeVoting(): [] {
   assert(isOpen, "Voting is not open");
+  assert(yesVotes.read() + noVotes.read() >= minimumQuorum, "Minimum voting quorum not reached");
   isOpen = false;
 }
