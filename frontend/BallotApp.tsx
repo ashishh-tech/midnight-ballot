@@ -131,9 +131,9 @@ export default function BallotApp() {
   const connectWallet = async () => {
     setWallet(prev => ({ ...prev, isConnecting: true, error: undefined }));
     try {
-      const midnightObj = typeof window !== 'undefined' ? window.midnight : undefined;
+      const midnightObj: any = typeof window !== 'undefined' ? (window as any).midnight : undefined;
       
-      if (!midnightObj) {
+      if (!midnightObj || typeof midnightObj !== 'object') {
         setWallet({
           isConnected: false,
           error: 'Midnight Lace wallet extension not detected in browser. Please install and unlock the extension.',
@@ -143,16 +143,28 @@ export default function BallotApp() {
         return;
       }
 
-      // Detect API provider (mnLace, lace, or custom provider)
-      const connectorApi: DAppConnectorAPI | undefined = 
-        midnightObj.mnLace || 
-        midnightObj.lace || 
-        (Object.values(midnightObj)[0] as DAppConnectorAPI);
+      // Safely detect API provider — look for known keys first, then scan for .enable()
+      let connectorApi: DAppConnectorAPI | undefined;
+      
+      if (midnightObj.mnLace && typeof midnightObj.mnLace.enable === 'function') {
+        connectorApi = midnightObj.mnLace as DAppConnectorAPI;
+      } else if (midnightObj.lace && typeof midnightObj.lace.enable === 'function') {
+        connectorApi = midnightObj.lace as DAppConnectorAPI;
+      } else {
+        // Scan all injected providers for one that has .enable()
+        for (const key of Object.keys(midnightObj)) {
+          const candidate = midnightObj[key];
+          if (candidate && typeof candidate === 'object' && typeof candidate.enable === 'function') {
+            connectorApi = candidate as DAppConnectorAPI;
+            break;
+          }
+        }
+      }
 
       if (!connectorApi) {
         setWallet({
           isConnected: false,
-          error: 'No active Midnight wallet provider found on window.midnight. Ensure Lace for Midnight is enabled.',
+          error: 'No active Midnight wallet provider found on window.midnight. Ensure Lace for Midnight is installed, unlocked, and set to Preprod network.',
           isConnecting: false
         });
         setShowWalletModal(true);
@@ -170,7 +182,7 @@ export default function BallotApp() {
 
       setWallet({
         isConnected: true,
-        walletName: connectorApi.name || 'Midnight Lace Wallet',
+        walletName: (connectorApi as any).name || 'Midnight Lace Wallet',
         address,
         shieldedAddress: state.shieldedAddress,
         unshieldedAddress: state.unshieldedAddress,
@@ -183,7 +195,7 @@ export default function BallotApp() {
       console.error('Wallet Connection Error:', err);
       setWallet({
         isConnected: false,
-        error: err?.message || 'Failed to connect Midnight Lace Wallet. Ensure the extension is unlocked.',
+        error: err?.message || 'Failed to connect Midnight Lace Wallet. Ensure the extension is unlocked and set to Preprod.',
         isConnecting: false
       });
     }
