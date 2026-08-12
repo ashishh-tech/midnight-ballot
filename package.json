@@ -9,7 +9,6 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "deploy": "npm run build && node dist/scripts/deploy.js",
-    "deploy:demo": "node deploy.mjs",
     "clean": "rimraf managed/ dist/"
   },
   "keywords": [
