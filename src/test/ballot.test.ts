@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { Contract, ledger } from "../../managed/contract/index.js";
+import { Contract, ledger, Witnesses } from "../../managed/contract/index.js";
 import {
   createConstructorContext,
   createCircuitContext,
@@ -16,9 +16,9 @@ import {
 describe("Midnight Ballot Contract (Real Compact Circuit Simulator)", () => {
   const dummyCoinPublicKey = { bytes: new Uint8Array(32) };
 
-  const createMockWitnesses = (secret: Uint8Array, choice: bigint) => ({
-    getVoterSecret: (ctx: any) => [ctx.currentPrivateState, secret],
-    getVoteChoice: (ctx: any) => [ctx.currentPrivateState, choice],
+  const createMockWitnesses = (secret: Uint8Array, choice: bigint): Witnesses<any> => ({
+    getVoterSecret: (ctx: any): [any, Uint8Array] => [ctx.currentPrivateState, secret],
+    getVoteChoice: (ctx: any): [any, bigint] => [ctx.currentPrivateState, choice],
   });
 
   it("should initialize contract ledger with zero votes and closed voting state", () => {

@@ -2,7 +2,7 @@ import { deployContract } from '@midnight-ntwrk/midnight-js-contracts';
 import { levelPrivateStateProvider } from '@midnight-ntwrk/midnight-js-level-private-state-provider';
 import { indexerPublicDataProvider } from '@midnight-ntwrk/midnight-js-indexer-public-data-provider';
 import { httpClientProofProvider } from '@midnight-ntwrk/midnight-js-http-client-proof-provider';
-import { ZKConfigProvider } from '@midnight-ntwrk/midnight-js-types';
+import { ZKConfigProvider, ProverKey, VerifierKey, ZKIR } from '@midnight-ntwrk/midnight-js-types';
 import { setNetworkId } from '@midnight-ntwrk/midnight-js-network-id';
 import { WalletBuilder } from '@midnight-ntwrk/wallet';
 import * as zswap from '@midnight-ntwrk/zswap';
@@ -17,17 +17,17 @@ import * as CompiledContract from '@midnight-ntwrk/compact-js/effect/CompiledCon
 dotenv.config();
 
 class LocalZkConfigProvider extends ZKConfigProvider<string> {
-    async getProverKey(circuitId: string): Promise<Uint8Array> {
+    async getProverKey(circuitId: string): Promise<ProverKey> {
         const filePath = path.join(process.cwd(), 'managed', 'keys', `${circuitId}.prover`);
-        return fs.readFileSync(filePath);
+        return fs.readFileSync(filePath) as unknown as ProverKey;
     }
-    async getVerifierKey(circuitId: string): Promise<Uint8Array> {
+    async getVerifierKey(circuitId: string): Promise<VerifierKey> {
         const filePath = path.join(process.cwd(), 'managed', 'keys', `${circuitId}.verifier`);
-        return fs.readFileSync(filePath);
+        return fs.readFileSync(filePath) as unknown as VerifierKey;
     }
-    async getZKIR(circuitId: string): Promise<Uint8Array> {
+    async getZKIR(circuitId: string): Promise<ZKIR> {
         const filePath = path.join(process.cwd(), 'managed', 'zkir', `${circuitId}.zkir`);
-        return fs.readFileSync(filePath);
+        return fs.readFileSync(filePath) as unknown as ZKIR;
     }
 }
 
@@ -98,7 +98,7 @@ async function main() {
 
     const zkConfigProvider = new LocalZkConfigProvider();
 
-    const providers = {
+    const providers: any = {
         privateStateProvider: levelPrivateStateProvider({
             privateStateStoreName: 'ballot-private-state',
             midnightDbName: 'ballot-db',
@@ -107,7 +107,7 @@ async function main() {
         }),
         publicDataProvider: indexerPublicDataProvider(indexerUrl, indexerWsUrl),
         zkConfigProvider,
-        proofProvider: httpClientProofProvider(proofServerUrl, zkConfigProvider),
+        proofProvider: httpClientProofProvider(proofServerUrl, zkConfigProvider as ZKConfigProvider<string>),
         walletProvider: new FacadeWalletProvider(wallet),
         midnightProvider: new FacadeMidnightProvider(wallet)
     };
@@ -123,12 +123,13 @@ async function main() {
 
     try {
         const baseContract = CompiledContract.make('ballot', Contract as any);
-        const compiledContract = CompiledContract.withWitnesses(baseContract, witnesses as any);
-        const deploymentResult = await deployContract(providers, {
+        const compiledContract = (CompiledContract as any).withWitnesses(baseContract, witnesses);
+        const deploymentResult = await deployContract(providers as any, {
             compiledContract: compiledContract as any,
             privateStateId: 'ballot-private-state',
-            initialPrivateState: {}
-        });
+            initialPrivateState: {},
+            args: []
+        } as any);
         
         console.log(`\n=================================================`);
         console.log(`✅ Contract deployed successfully!`);
