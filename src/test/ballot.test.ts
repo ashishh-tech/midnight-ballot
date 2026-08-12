@@ -1,191 +1,246 @@
 import { describe, it, expect } from "vitest";
+import { Contract, ledger } from "../../managed/contract/index.js";
+import {
+  createConstructorContext,
+  createCircuitContext,
+  dummyContractAddress,
+} from "@midnight-ntwrk/compact-runtime";
 
 // ============================================================================
-// Midnight Ballot Contract Test Suite (Simulated)
+// Midnight Ballot Contract Test Suite (Real Compact Circuit Simulator)
 // ============================================================================
-// Verifies ZK circuit logic, nullifier double-voting prevention, voter eligibility,
-// and quorum enforcement.
+// Executes ZK circuit logic, state transitions, voter choice handling,
+// and open/close state machine validation against compiled Compact circuits.
 // ============================================================================
 
-describe("Midnight Ballot Contract (Simulated & Circuit Logic)", () => {
+describe("Midnight Ballot Contract (Real Compact Circuit Simulator)", () => {
+  const dummyCoinPublicKey = { bytes: new Uint8Array(32) };
 
-  class MockBallotSimulator {
-    private state = {
-      yesVotes: 0n,
-      noVotes: 0n,
-      topicHash: "0x0000000000000000000000000000000000000000000000000000000000000000",
-      minimumQuorum: 1n,
-      voterGroupMerkleRoot: "0x0000000000000000000000000000000000000000000000000000000000000000",
-      isOpen: false,
-      nullifiers: new Set<string>()
-    };
-
-    async ledger() {
-      return {
-        ...this.state,
-        nullifiersCount: BigInt(this.state.nullifiers.size)
-      };
-    }
-
-    async openVoting(topic: string, quorum: bigint = 1n, groupRoot: string = "0x1111222233334444555566667777888899990000111122223333444455556666") {
-      if (this.state.isOpen) throw new Error("Voting is already open");
-      this.state.topicHash = topic;
-      this.state.minimumQuorum = quorum;
-      this.state.voterGroupMerkleRoot = groupRoot;
-      this.state.isOpen = true;
-    }
-
-    async castVote(witnesses: {
-      getVoterSecret: () => string;
-      getVoteChoice: () => bigint;
-      getNullifier: () => string;
-      getEligibilityProof: () => string;
-    }) {
-      if (!this.state.isOpen) throw new Error("Voting is not open");
-      
-      const choice = witnesses.getVoteChoice();
-      const nullifier = witnesses.getNullifier();
-      const eligibility = witnesses.getEligibilityProof();
-
-      if (!eligibility || eligibility === "0x00") {
-        throw new Error("Invalid voter eligibility proof");
-      }
-
-      if (choice !== 0n && choice !== 1n) {
-        throw new Error("Vote must be 0 (No) or 1 (Yes)");
-      }
-
-      // Enforce Nullifier Uniqueness (Double Voting Prevention)
-      if (this.state.nullifiers.has(nullifier)) {
-        throw new Error("Vote already cast with this nullifier");
-      }
-
-      this.state.nullifiers.add(nullifier);
-
-      if (choice === 1n) {
-        this.state.yesVotes += 1n;
-      } else {
-        this.state.noVotes += 1n;
-      }
-    }
-
-    async closeVoting() {
-      if (!this.state.isOpen) throw new Error("Voting is not open");
-      if (this.state.yesVotes + this.state.noVotes < this.state.minimumQuorum) {
-        throw new Error("Minimum voting quorum not reached");
-      }
-      this.state.isOpen = false;
-    }
-  }
-
-  // --- TESTS ---
-
-  it("should initialize with zero votes and closed status", async () => {
-    const simulator = new MockBallotSimulator();
-    const state = await simulator.ledger();
-
-    expect(state.yesVotes).toBe(0n);
-    expect(state.noVotes).toBe(0n);
-    expect(state.isOpen).toBe(false);
-    expect(state.nullifiersCount).toBe(0n);
+  const createMockWitnesses = (secret: Uint8Array, choice: bigint) => ({
+    getVoterSecret: (ctx: any) => [ctx.currentPrivateState, secret],
+    getVoteChoice: (ctx: any) => [ctx.currentPrivateState, choice],
   });
 
-  it("should open voting with configured topic, quorum, and voter group root", async () => {
-    const simulator = new MockBallotSimulator();
-    const sampleTopic = "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef";
-    
-    await simulator.openVoting(sampleTopic, 2n, "0xgroup123");
-    const state = await simulator.ledger();
+  it("should initialize contract ledger with zero votes and closed voting state", () => {
+    const dummySecret = new Uint8Array(32);
+    const contract = new Contract(createMockWitnesses(dummySecret, 1n));
+    const constructorContext = createConstructorContext(
+      {},
+      dummyCoinPublicKey
+    );
 
-    expect(state.isOpen).toBe(true);
-    expect(state.topicHash).toBe(sampleTopic);
-    expect(state.minimumQuorum).toBe(2n);
-    expect(state.voterGroupMerkleRoot).toBe("0xgroup123");
+    const initResult = contract.initialState(constructorContext);
+    const ledgerState = ledger(initResult.currentContractState.data);
+
+    expect(ledgerState.yesVotes).toBe(0n);
+    expect(ledgerState.noVotes).toBe(0n);
+    expect(ledgerState.isOpen).toBe(false);
   });
 
-  it("should cast a vote successfully and record nullifier on public ledger", async () => {
-    const simulator = new MockBallotSimulator();
-    await simulator.openVoting("0x1234", 1n);
+  it("should open voting and update public ledger topic hash and open status", () => {
+    const dummySecret = new Uint8Array(32);
+    const contract = new Contract(createMockWitnesses(dummySecret, 1n));
+    const constructorContext = createConstructorContext(
+      {},
+      dummyCoinPublicKey
+    );
+    const initResult = contract.initialState(constructorContext);
 
-    const voter1Witnesses = {
-      getVoterSecret: () => "voter-1-secret-key",
-      getVoteChoice: () => 1n,
-      getNullifier: () => "0xnullifier_voter_1_topic_1234",
-      getEligibilityProof: () => "0xproof_valid_member"
-    };
+    let contractState = initResult.currentContractState;
+    let privateState = initResult.currentPrivateState;
 
-    await simulator.castVote(voter1Witnesses);
+    const circuitContext = createCircuitContext(
+      dummyContractAddress(),
+      dummyCoinPublicKey,
+      contractState.data,
+      privateState
+    );
 
-    const state = await simulator.ledger();
-    expect(state.yesVotes).toBe(1n);
-    expect(state.noVotes).toBe(0n);
-    expect(state.nullifiersCount).toBe(1n);
+    const topicHash = new Uint8Array(32);
+    topicHash[0] = 0xab;
+    topicHash[31] = 0xcd;
+
+    const openResult = contract.circuits.openVoting(circuitContext, topicHash);
+    contractState.data = openResult.context.currentQueryContext.state;
+
+    const ledgerState = ledger(contractState.data);
+    expect(ledgerState.isOpen).toBe(true);
+    expect(ledgerState.topicHash).toEqual(topicHash);
   });
 
-  it("REJECTS double voting: second vote attempt with identical nullifier fails", async () => {
-    const simulator = new MockBallotSimulator();
-    await simulator.openVoting("0x1234", 1n);
+  it("should cast a YES vote via ZK circuit and increment public yesVotes counter", () => {
+    const secret = new Uint8Array(32);
+    secret.fill(1);
+    const contract = new Contract(createMockWitnesses(secret, 1n)); // 1n = Yes
 
-    const voter1Witnesses = {
-      getVoterSecret: () => "voter-1-secret-key",
-      getVoteChoice: () => 1n,
-      getNullifier: () => "0xnullifier_voter_1_topic_1234",
-      getEligibilityProof: () => "0xproof_valid_member"
-    };
+    const constructorContext = createConstructorContext(
+      {},
+      dummyCoinPublicKey
+    );
+    const initResult = contract.initialState(constructorContext);
 
-    // First vote succeeds
-    await simulator.castVote(voter1Witnesses);
+    let contractState = initResult.currentContractState;
+    let privateState = initResult.currentPrivateState;
 
-    // Second vote with the SAME nullifier MUST be rejected!
-    const doubleVoteAttempt = {
-      ...voter1Witnesses,
-      getVoteChoice: () => 0n // trying to change vote or vote again
-    };
+    // Step 1: Open voting
+    let circuitContext = createCircuitContext(
+      dummyContractAddress(),
+      dummyCoinPublicKey,
+      contractState.data,
+      privateState
+    );
+    const topicHash = new Uint8Array(32);
+    const openResult = contract.circuits.openVoting(circuitContext, topicHash);
+    contractState.data = openResult.context.currentQueryContext.state;
+    privateState = openResult.context.currentPrivateState;
 
-    await expect(simulator.castVote(doubleVoteAttempt)).rejects.toThrow("Vote already cast with this nullifier");
-    
-    const state = await simulator.ledger();
-    expect(state.yesVotes).toBe(1n);
-    expect(state.noVotes).toBe(0n); // Unchanged!
+    // Step 2: Cast YES vote
+    circuitContext = createCircuitContext(
+      dummyContractAddress(),
+      dummyCoinPublicKey,
+      contractState.data,
+      privateState
+    );
+    const voteResult = contract.circuits.castVote(circuitContext);
+    contractState.data = voteResult.context.currentQueryContext.state;
+
+    const ledgerState = ledger(contractState.data);
+    expect(ledgerState.yesVotes).toBe(1n);
+    expect(ledgerState.noVotes).toBe(0n);
   });
 
-  it("allows multiple unique voters with distinct nullifiers", async () => {
-    const simulator = new MockBallotSimulator();
-    await simulator.openVoting("0x1234", 2n);
+  it("should cast a NO vote via ZK circuit and increment public noVotes counter", () => {
+    const secret = new Uint8Array(32);
+    secret.fill(2);
+    const contract = new Contract(createMockWitnesses(secret, 0n)); // 0n = No
 
-    await simulator.castVote({
-      getVoterSecret: () => "voter-1-secret",
-      getVoteChoice: () => 1n,
-      getNullifier: () => "0xnullifier_voter_1",
-      getEligibilityProof: () => "0xproof_1"
-    });
+    const constructorContext = createConstructorContext(
+      {},
+      dummyCoinPublicKey
+    );
+    const initResult = contract.initialState(constructorContext);
 
-    await simulator.castVote({
-      getVoterSecret: () => "voter-2-secret",
-      getVoteChoice: () => 0n,
-      getNullifier: () => "0xnullifier_voter_2",
-      getEligibilityProof: () => "0xproof_2"
-    });
+    let contractState = initResult.currentContractState;
+    let privateState = initResult.currentPrivateState;
 
-    const state = await simulator.ledger();
-    expect(state.yesVotes).toBe(1n);
-    expect(state.noVotes).toBe(1n);
-    expect(state.nullifiersCount).toBe(2n);
+    // Open voting
+    let circuitContext = createCircuitContext(
+      dummyContractAddress(),
+      dummyCoinPublicKey,
+      contractState.data,
+      privateState
+    );
+    const topicHash = new Uint8Array(32);
+    const openResult = contract.circuits.openVoting(circuitContext, topicHash);
+    contractState.data = openResult.context.currentQueryContext.state;
+    privateState = openResult.context.currentPrivateState;
+
+    // Cast NO vote
+    circuitContext = createCircuitContext(
+      dummyContractAddress(),
+      dummyCoinPublicKey,
+      contractState.data,
+      privateState
+    );
+    const voteResult = contract.circuits.castVote(circuitContext);
+    contractState.data = voteResult.context.currentQueryContext.state;
+
+    const ledgerState = ledger(contractState.data);
+    expect(ledgerState.yesVotes).toBe(0n);
+    expect(ledgerState.noVotes).toBe(1n);
   });
 
-  it("enforces minimum quorum rule before closing voting", async () => {
-    const simulator = new MockBallotSimulator();
-    await simulator.openVoting("0x1234", 5n); // Quorum of 5 required
+  it("should REJECT vote casting when voting is closed", () => {
+    const secret = new Uint8Array(32);
+    const contract = new Contract(createMockWitnesses(secret, 1n));
+    const constructorContext = createConstructorContext(
+      {},
+      dummyCoinPublicKey
+    );
+    const initResult = contract.initialState(constructorContext);
 
-    // Cast only 1 vote
-    await simulator.castVote({
-      getVoterSecret: () => "voter-1-secret",
-      getVoteChoice: () => 1n,
-      getNullifier: () => "0xnullifier_voter_1",
-      getEligibilityProof: () => "0xproof_1"
-    });
+    const circuitContext = createCircuitContext(
+      dummyContractAddress(),
+      dummyCoinPublicKey,
+      initResult.currentContractState.data,
+      initResult.currentPrivateState
+    );
 
-    // Attempting to close should fail quorum check
-    await expect(simulator.closeVoting()).rejects.toThrow("Minimum voting quorum not reached");
+    expect(() => contract.circuits.castVote(circuitContext)).toThrow(
+      "Voting is not open"
+    );
+  });
+
+  it("should REJECT opening voting if voting is already open", () => {
+    const secret = new Uint8Array(32);
+    const contract = new Contract(createMockWitnesses(secret, 1n));
+    const constructorContext = createConstructorContext(
+      {},
+      dummyCoinPublicKey
+    );
+    const initResult = contract.initialState(constructorContext);
+
+    let contractState = initResult.currentContractState;
+    let privateState = initResult.currentPrivateState;
+
+    let circuitContext = createCircuitContext(
+      dummyContractAddress(),
+      dummyCoinPublicKey,
+      contractState.data,
+      privateState
+    );
+    const topicHash = new Uint8Array(32);
+    const openResult = contract.circuits.openVoting(circuitContext, topicHash);
+    contractState.data = openResult.context.currentQueryContext.state;
+    privateState = openResult.context.currentPrivateState;
+
+    // Attempt second openVoting
+    circuitContext = createCircuitContext(
+      dummyContractAddress(),
+      dummyCoinPublicKey,
+      contractState.data,
+      privateState
+    );
+    expect(() => contract.circuits.openVoting(circuitContext, topicHash)).toThrow(
+      "Voting is already open"
+    );
+  });
+
+  it("should close voting and update public ledger state to closed", () => {
+    const secret = new Uint8Array(32);
+    const contract = new Contract(createMockWitnesses(secret, 1n));
+    const constructorContext = createConstructorContext(
+      {},
+      dummyCoinPublicKey
+    );
+    const initResult = contract.initialState(constructorContext);
+
+    let contractState = initResult.currentContractState;
+    let privateState = initResult.currentPrivateState;
+
+    // Open voting
+    let circuitContext = createCircuitContext(
+      dummyContractAddress(),
+      dummyCoinPublicKey,
+      contractState.data,
+      privateState
+    );
+    const topicHash = new Uint8Array(32);
+    const openResult = contract.circuits.openVoting(circuitContext, topicHash);
+    contractState.data = openResult.context.currentQueryContext.state;
+    privateState = openResult.context.currentPrivateState;
+
+    // Close voting
+    circuitContext = createCircuitContext(
+      dummyContractAddress(),
+      dummyCoinPublicKey,
+      contractState.data,
+      privateState
+    );
+    const closeResult = contract.circuits.closeVoting(circuitContext);
+    contractState.data = closeResult.context.currentQueryContext.state;
+
+    const ledgerState = ledger(contractState.data);
+    expect(ledgerState.isOpen).toBe(false);
   });
 });
