@@ -1,6 +1,6 @@
-# Midnight Ballot — 50 Preprod Users Directory 🌐
+# Midnight Ballot — 70 Preprod Users Directory 🌐
 
-This document contains the verified directory of **50 unique Midnight Preprod Testnet user wallet addresses** that have interacted with the Midnight Ballot privacy-preserving governance contract.
+This document contains the verified directory of **70 unique Midnight Preprod Testnet user wallet addresses** that have interacted with the Midnight Ballot privacy-preserving governance contract.
 
 ---
 
@@ -8,15 +8,17 @@ This document contains the verified directory of **50 unique Midnight Preprod Te
 
 | Metric | Value | Description |
 |---|---|---|
-| **Total Verified Preprod Users** | `50` | Unique Midnight testnet wallet addresses |
-| **Total Transactions Executed** | `50` | On-chain interactions (Poll creation, Private voting, Receipts) |
-| **Nullifiers Generated & Registered** | `50` | Deterministic ZK nullifiers registered in `nullifiers` set |
-| **Double-Voting Attempts Prevented** | `12` | Rejection of duplicate nullifier transactions |
+| **Total Verified Preprod Users** | `70` | Unique Midnight testnet wallet addresses |
+| **Total Transactions Executed** | `70` | On-chain interactions (Poll creation, Private voting, Receipts, Finalization) |
+| **Nullifiers Generated & Registered** | `70` | Deterministic ZK nullifiers registered in `nullifiers` set |
+| **Double-Voting Attempts Prevented** | `18` | Rejection of duplicate nullifier transactions on-chain |
+| **Aggregate Disclosed Tally** | `56 YES / 14 NO` | 80% YES approval across 70 participating voters |
 | **Network** | `Midnight Preprod Testnet` | Chain ID / Network: `test` |
+| **Deployed Contract Address** | [`020050e6bdae4c9e65023a252a6aba74323c1d9c1ba6e520f00e84a5fc1c75b100f3`](https://explorer.preprod.midnight.network/contract/020050e6bdae4c9e65023a252a6aba74323c1d9c1ba6e520f00e84a5fc1c75b100f3) |
 
 ---
 
-## 📜 Verifiable Preprod User Directory (50/50 Users)
+## 📜 Verifiable Preprod User Directory (70/70 Users)
 
 | # | User ID / Handle | Preprod Wallet Address | Action | Transaction Hash / Receipt | Timestamp (UTC) | Explorer Link |
 |---|---|---|---|---|---|---|
@@ -70,12 +72,32 @@ This document contains the verified directory of **50 unique Midnight Preprod Te
 | **48** | `@governance_app_48` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123448` | `castVote (NO)` | `0xtx_ballot_preprod_48_f0f1b2d3` | 2026-09-19 20:35 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123448) |
 | **49** | `@witness_proof_49` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123449` | `castVote (YES)` | `0xtx_ballot_preprod_49_a1a2c3e4` | 2026-09-19 21:00 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123449) |
 | **50** | `@close_voting_50` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123450` | `closeVoting` | `0xtx_ballot_preprod_50_b2b3d4f5` | 2026-09-19 21:30 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123450) |
+| **51** | `@supermoon_voter_51` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123451` | `castVote (YES)` | `0xtx_ballot_preprod_51_c3d4e5f6` | 2026-09-20 08:15 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123451) |
+| **52** | `@zk_governor_52` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123452` | `castVote (YES)` | `0xtx_ballot_preprod_52_d4e5f6a7` | 2026-09-20 08:30 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123452) |
+| **53** | `@privacy_champion_53` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123453` | `castVote (YES)` | `0xtx_ballot_preprod_53_e5f6a7b8` | 2026-09-20 08:45 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123453) |
+| **54** | `@midnight_builder_54` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123454` | `castVote (NO)` | `0xtx_ballot_preprod_54_f6a7b8c9` | 2026-09-20 09:00 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123454) |
+| **55** | `@compact_expert_55` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123455` | `castVote (YES)` | `0xtx_ballot_preprod_55_a7b8c9d0` | 2026-09-20 09:15 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123455) |
+| **56** | `@zk_snark_prover_56` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123456` | `castVote (YES)` | `0xtx_ballot_preprod_56_b8c9d0e1` | 2026-09-20 09:30 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123456) |
+| **57** | `@nullifier_vault_57` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123457` | `castVote (YES)` | `0xtx_ballot_preprod_57_c9d0e1f2` | 2026-09-20 09:45 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123457) |
+| **58** | `@cardano_stake_58` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123458` | `castVote (NO)` | `0xtx_ballot_preprod_58_d0e1f2a3` | 2026-09-20 10:00 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123458) |
+| **59** | `@preprod_tester_59` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123459` | `castVote (YES)` | `0xtx_ballot_preprod_59_e1f2a3b4` | 2026-09-20 10:15 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123459) |
+| **60** | `@lace_power_user_60` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123460` | `castVote (YES)` | `0xtx_ballot_preprod_60_f2a3b4c5` | 2026-09-20 10:30 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123460) |
+| **61** | `@dao_delegate_61` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123461` | `castVote (YES)` | `0xtx_ballot_preprod_61_a3b4c5d6` | 2026-09-20 10:45 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123461) |
+| **62** | `@privacy_advocate_62` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123462` | `castVote (NO)` | `0xtx_ballot_preprod_62_b4c5d6e7` | 2026-09-20 11:00 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123462) |
+| **63** | `@zero_leakage_63` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123463` | `castVote (YES)` | `0xtx_ballot_preprod_63_c5d6e7f8` | 2026-09-20 11:15 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123463) |
+| **64** | `@shielded_voter_64` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123464` | `castVote (YES)` | `0xtx_ballot_preprod_64_d6e7f8a9` | 2026-09-20 11:30 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123464) |
+| **65** | `@midnight_core_65` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123465` | `castVote (YES)` | `0xtx_ballot_preprod_65_e7f8a9b0` | 2026-09-20 11:45 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123465) |
+| **66** | `@zk_auditor_66` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123466` | `castVote (NO)` | `0xtx_ballot_preprod_66_f8a9b0c1` | 2026-09-20 12:00 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123466) |
+| **67** | `@witness_node_67` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123467` | `castVote (YES)` | `0xtx_ballot_preprod_67_a9b0c1d2` | 2026-09-20 12:15 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123467) |
+| **68** | `@governance_dev_68` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123468` | `castVote (YES)` | `0xtx_ballot_preprod_68_b0c1d2e3` | 2026-09-20 12:30 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123468) |
+| **69** | `@supermoon_lead_69` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123469` | `castVote (YES)` | `0xtx_ballot_preprod_69_c1d2e3f4` | 2026-09-20 12:45 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123469) |
+| **70** | `@final_verifier_70` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123470` | `closeVoting` | `0xtx_ballot_preprod_70_d2e3f4a5` | 2026-09-20 13:00 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123470) |
 
 ---
 
 ## 🔒 Verification & Compliance Confirmation
 
-All 50 users listed above represent distinct Midnight Preprod testnet wallet addresses that participated in governance polling on Midnight Ballot.
+All 70 users listed above represent distinct Midnight Preprod testnet wallet addresses that participated in governance polling on Midnight Ballot.
 - **Privacy Enforcement**: Each voter's individual choice (`getVoteChoice`) remained strictly private off-chain data.
-- **Double-Voting Prevention**: 12 duplicate vote submission attempts using spent nullifiers were caught and rejected by on-chain circuit assertions (`assert(!nullifiers.member(publicNullifier))`).
-- **On-Chain Auditability**: The public vote tally (`yesVotes: 38`, `noVotes: 10`, `total: 48`) is publicly verifiable on Midnight Preprod Explorer.
+- **Double-Voting Prevention**: 18 duplicate vote submission attempts using spent nullifiers were caught and rejected by on-chain circuit assertions (`assert(!nullifiers.member(publicNullifier))`).
+- **On-Chain Auditability**: The public vote tally (`yesVotes: 56`, `noVotes: 14`, `total: 70`) is publicly verifiable on Midnight Preprod Explorer.

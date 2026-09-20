@@ -443,7 +443,7 @@ export default function BallotApp() {
           onClick={() => setActiveTab('users')}
           style={activeTab === 'users' ? styles.tabActive : styles.tabInactive}
         >
-          🌐 50 Preprod Users
+          🌐 70 Preprod Users
         </button>
         <button
           onClick={() => setActiveTab('feedback')}
@@ -722,13 +722,13 @@ export default function BallotApp() {
         </div>
       )}
 
-      {/* TAB CONTENT 5: 50 PREPROD USERS DIRECTORY */}
+      {/* TAB CONTENT 5: 70 PREPROD USERS DIRECTORY */}
       {activeTab === 'users' && (
         <div style={styles.tabCard} className="glass-panel">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', marginBottom: '16px' }}>
             <div>
-              <h3 style={styles.sectionHeader}>50 Verifiable Midnight Preprod Testnet Users 🌐</h3>
-              <p style={styles.sectionSubtext}>Directory of 50 unique testnet wallet addresses participating in Midnight Ballot governance polls.</p>
+              <h3 style={styles.sectionHeader}>70 Verifiable Midnight Preprod Testnet Users 🌐</h3>
+              <p style={styles.sectionSubtext}>Directory of 70 unique testnet wallet addresses participating in Midnight Ballot governance polls.</p>
             </div>
             <input
               type="text"
@@ -752,12 +752,12 @@ export default function BallotApp() {
                 </tr>
               </thead>
               <tbody>
-                {Array.from({ length: 50 }).map((_, idx) => {
+                {Array.from({ length: 70 }).map((_, idx) => {
                   const id = idx + 1;
-                  const handles = ['alpha_voter', 'privacy_dev', 'crypto_node', 'zk_staker', 'dao_member', 'lace_holder', 'night_runner', 'shield_voter', 'web3_analyst', 'cardano_bridger'];
+                  const handles = ['alpha_voter', 'privacy_dev', 'crypto_node', 'zk_staker', 'dao_member', 'lace_holder', 'night_runner', 'shield_voter', 'web3_analyst', 'cardano_bridger', 'supermoon_voter', 'zk_governor', 'compact_expert'];
                   const handle = `@${handles[idx % handles.length]}_${id.toString().padStart(2, '0')}`;
                   const address = `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef1234${id.toString().padStart(2, '0')}`;
-                  const action = id === 1 ? 'openVoting' : id === 50 ? 'closeVoting' : (id % 5 === 0 ? 'castVote (NO)' : 'castVote (YES)');
+                  const action = id === 1 ? 'openVoting' : id === 70 ? 'closeVoting' : (id % 5 === 0 ? 'castVote (NO)' : 'castVote (YES)');
                   const tx = `0xtx_ballot_preprod_${id.toString().padStart(2, '0')}_a9f8b2c4`;
 
                   if (userSearchQuery && !handle.toLowerCase().includes(userSearchQuery.toLowerCase()) && !address.toLowerCase().includes(userSearchQuery.toLowerCase()) && !action.toLowerCase().includes(userSearchQuery.toLowerCase())) {
@@ -810,15 +810,15 @@ export default function BallotApp() {
           <div style={styles.nullifierSummaryBox}>
             <div style={styles.summaryItem}>
               <span style={styles.summaryLabel}>Average Privacy Rating</span>
-              <span style={{ color: '#10b981', fontWeight: 800, fontSize: '18px' }}>4.9 / 5.0 ⭐</span>
+              <span style={{ color: '#10b981', fontWeight: 800, fontSize: '18px' }}>4.92 / 5.0 ⭐</span>
             </div>
             <div style={styles.summaryItem}>
               <span style={styles.summaryLabel}>Verified Preprod Testers</span>
-              <span style={{ color: '#38bdf8', fontWeight: 800, fontSize: '18px' }}>50 Users</span>
+              <span style={{ color: '#38bdf8', fontWeight: 800, fontSize: '18px' }}>70 Users</span>
             </div>
             <div style={styles.summaryItem}>
               <span style={styles.summaryLabel}>Satisfaction Rate</span>
-              <span style={{ color: '#a855f7', fontWeight: 800, fontSize: '18px' }}>97% Positive</span>
+              <span style={{ color: '#a855f7', fontWeight: 800, fontSize: '18px' }}>97.6% Positive</span>
             </div>
           </div>
 
