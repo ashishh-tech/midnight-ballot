@@ -35,7 +35,21 @@ Midnight Ballot has actively gathered and acted on tester feedback during testne
 | **4** | *"Show clear Lace installation guidance instead of a mock fallback when the extension is absent."* | Replaced demo wallet fallback with native DApp connector integration and a step-by-step Lace setup modal. | [`frontend/BallotApp.tsx:130-195`](file:///c:/Users/name/Desktop/stellar/midnight-ballot/frontend/BallotApp.tsx#L130-L195), [`frontend/BallotApp.tsx:970-995`](file:///c:/Users/name/Desktop/stellar/midnight-ballot/frontend/BallotApp.tsx#L970-L995) |
 | **5** | *"Provide an anonymous cryptographic receipt after voting to verify submission."* | Created `VoteReceipt` visualizer showing transaction hash, spent nullifier commitment, proposal ID, and timestamp. | [`frontend/BallotApp.tsx:580-600`](file:///c:/Users/name/Desktop/stellar/midnight-ballot/frontend/BallotApp.tsx#L580-L600) |
 
-*Full feedback analysis and rubric: [USER_FEEDBACK.md](file:///c:/Users/name/Desktop/stellar/midnight-ballot/USER_FEEDBACK.md)*
+*Full documentation: [USER_FEEDBACK.md](file:///c:/Users/name/Desktop/stellar/midnight-ballot/USER_FEEDBACK.md) & [FEEDBACK.md](file:///c:/Users/name/Desktop/stellar/midnight-ballot/FEEDBACK.md)*
+
+---
+
+## 🌟 Level 6 ("Supermoon") Shipped Improvements & 20 New Users Cohort
+
+For the **Level 6 ("Supermoon")** milestone, Midnight Ballot delivered and shipped 4 major improvements directly traceable to Level 5 tester feedback:
+
+1. **Admin Authorization & Minimum Quorum Enforcement**: Contract-level assertions ensuring only the stored `adminPublicKey` can execute `openVoting()` and `closeVoting()`, with quorum validation on the public ledger.
+2. **Proactive Nullifier Double-Vote Shield**: Visual client alert preventing redundant transaction fee expenditure.
+3. **High-Contrast Dark / Light Theme System**: Dynamic CSS custom property switching for daylight and accessibility.
+4. **Transparent Lace DApp Connector Guidance**: Direct onboarding modal replacing mock wallet states.
+5. **20 Incremental Preprod Testnet Users (Users 51–70)**: Conducted 20 new user testing sessions specifically validating the 4 shipped improvements above (Total 70 sessions logged in [`PREPROD_USERS.md`](file:///c:/Users/name/Desktop/stellar/midnight-ballot/PREPROD_USERS.md)).
+
+*Detailed implementation notes: [FEEDBACK.md](file:///c:/Users/name/Desktop/stellar/midnight-ballot/FEEDBACK.md) and [PREPROD_USERS.md](file:///c:/Users/name/Desktop/stellar/midnight-ballot/PREPROD_USERS.md)*
 
 ---
 
