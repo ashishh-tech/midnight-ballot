@@ -129,17 +129,11 @@ Once deployed, verify on the [Midnight Preprod Block Explorer](https://explorer.
 
 Once deployed, you can:
 
-1. **View Contract State**: Use the Midnight CLI or SDK to query public ledger values
-2. **Submit Transactions**: Call `openVoting`, `castVote`, `closeVoting` via the SDK
-3. **Integrate with Frontend**: Use the contract's TypeScript API in `managed/contract/index.js`
-
-## Next Steps
-
-- Create a frontend UI to interact with the contract
-- Implement voter registration with nullifiers
-- Add multi-choice voting options
-- Deploy to Mainnet when production-ready
+1. **Interact via the Web DApp**: Launch the Next.js frontend in `frontend/` or visit [https://midnight-ballot.netlify.app](https://midnight-ballot.netlify.app)
+2. **View Contract State**: Use the Midnight CLI, SDK, or Block Explorer to query public ledger values
+3. **Submit Transactions**: Call `openVoting`, `castVote`, `closeVoting` via Lace Wallet Connector or `@midnight-ntwrk/midnight-js-contracts`
+4. **Follow the Usage Guide**: See [USAGE.md](file:///c:/Users/name/Desktop/stellar/midnight-ballot/USAGE.md) for complete voter, admin, and developer instructions
 
 ---
 
-For more details, see the [Midnight Documentation](https://docs.midnight.network/).
+For more details, see [USAGE.md](file:///c:/Users/name/Desktop/stellar/midnight-ballot/USAGE.md) and the [Midnight Documentation](https://docs.midnight.network/).

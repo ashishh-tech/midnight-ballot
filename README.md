@@ -16,7 +16,26 @@
 | **Contract Source** | [`contracts/ballot.compact`](file:///c:/Users/name/Desktop/stellar/midnight-ballot/contracts/ballot.compact) |
 | **Live Web App Demo** | [https://midnight-ballot.netlify.app](https://midnight-ballot.netlify.app) |
 | **Preprod Block Explorer** | [Midnight Preprod Explorer](https://explorer.preprod.midnight.network) |
+| **User & Operator Guide** | [USAGE.md](file:///c:/Users/name/Desktop/stellar/midnight-ballot/USAGE.md) |
+| **Deployment Guide** | [DEPLOYMENT_GUIDE.md](file:///c:/Users/name/Desktop/stellar/midnight-ballot/DEPLOYMENT_GUIDE.md) |
+| **User Feedback & Code Evolution** | [USER_FEEDBACK.md](file:///c:/Users/name/Desktop/stellar/midnight-ballot/USER_FEEDBACK.md) |
 | **CI/CD Pipeline** | [![Test & Build CI](https://github.com/ashishh-tech/midnight-ballot/actions/workflows/test.yml/badge.svg)](https://github.com/ashishh-tech/midnight-ballot/actions/workflows/test.yml) |
+
+---
+
+## 🌕 Level 5 ("Full Moon") Compliance & Feedback-Driven Code Evolution
+
+Midnight Ballot has actively gathered and acted on tester feedback during testnet iterations. The table below links **What We Heard** to the **Exact Code Changes** made in response:
+
+| # | What We Heard (User Feedback) | What We Changed (Implemented Code & Architecture) | File & Function Reference |
+|---|---|---|---|
+| **1** | *"Double-voting attempts should be rejected before spending gas, with an instant visual alert."* | Added client-side nullifier pre-check banner and on-chain Set assertion in `castVote()` circuit. | [`contracts/ballot.compact:109`](file:///c:/Users/name/Desktop/stellar/midnight-ballot/contracts/ballot.compact#L109), [`frontend/BallotApp.tsx:210-230`](file:///c:/Users/name/Desktop/stellar/midnight-ballot/frontend/BallotApp.tsx#L210-L230) |
+| **2** | *"Add a Dark/Light mode toggle for accessibility and daylight viewing environments."* | Implemented dynamic CSS variable system with interactive theme toggle adapting all cards, modals, and typography. | [`frontend/BallotApp.tsx:70-78`](file:///c:/Users/name/Desktop/stellar/midnight-ballot/frontend/BallotApp.tsx#L70-L78), [`frontend/styles/globals.css:10-35`](file:///c:/Users/name/Desktop/stellar/midnight-ballot/frontend/styles/globals.css#L10-L35) |
+| **3** | *"Only the designated admin should open/close polls, and quorum must be met before tally closure."* | Added `adminPublicKey` ledger state, `getAdminKey` witness, and quorum assertion (`yesVotes + noVotes >= minimumQuorum`). | [`contracts/ballot.compact:81-145`](file:///c:/Users/name/Desktop/stellar/midnight-ballot/contracts/ballot.compact#L81-L145), [`src/test/ballot.test.ts`](file:///c:/Users/name/Desktop/stellar/midnight-ballot/src/test/ballot.test.ts) |
+| **4** | *"Show clear Lace installation guidance instead of a mock fallback when the extension is absent."* | Replaced demo wallet fallback with native DApp connector integration and a step-by-step Lace setup modal. | [`frontend/BallotApp.tsx:130-195`](file:///c:/Users/name/Desktop/stellar/midnight-ballot/frontend/BallotApp.tsx#L130-L195), [`frontend/BallotApp.tsx:970-995`](file:///c:/Users/name/Desktop/stellar/midnight-ballot/frontend/BallotApp.tsx#L970-L995) |
+| **5** | *"Provide an anonymous cryptographic receipt after voting to verify submission."* | Created `VoteReceipt` visualizer showing transaction hash, spent nullifier commitment, proposal ID, and timestamp. | [`frontend/BallotApp.tsx:580-600`](file:///c:/Users/name/Desktop/stellar/midnight-ballot/frontend/BallotApp.tsx#L580-L600) |
+
+*Full feedback analysis and rubric: [USER_FEEDBACK.md](file:///c:/Users/name/Desktop/stellar/midnight-ballot/USER_FEEDBACK.md)*
 
 ---
 
@@ -152,15 +171,16 @@ midnight-ballot/
 │       ├── ballot.test.ts      # 11/11 Compact circuit simulator unit tests
 │       └── ballot.e2e.test.ts  # End-to-end full lifecycle integration test
 ├── frontend/
-│   ├── BallotApp.tsx           # React UI with Lace Wallet, Circuits, Nullifiers
+│   ├── BallotApp.tsx           # React UI with Lace Wallet, Circuits, Nullifiers, Themes
 │   ├── pages/                  # Next.js page routes
-│   └── styles/                 # Theme styling
+│   └── styles/                 # Theme styling (globals.css variables)
 ├── .github/
 │   └── workflows/
 │       └── test.yml            # Automated CI/CD pipeline (TypeScript, Tests, Next.js Build)
-├── DEPLOYMENT_GUIDE.md         # Deployment & testing instructions
+├── USAGE.md                    # Voter, admin, and developer guide
+├── DEPLOYMENT_GUIDE.md         # Deployment & verification guide
 ├── PREPROD_USERS.md            # Preprod user testing protocol & log template
-├── USER_FEEDBACK.md            # User experience evaluation & feedback framework
+├── USER_FEEDBACK.md            # What We Heard -> What We Changed feedback matrix
 ├── package.json
 └── README.md
 ```

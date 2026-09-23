@@ -69,6 +69,14 @@ interface FeedbackEntry {
 
 export default function BallotApp() {
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+
+  // Synchronize data-theme attribute on document root for instant CSS theme switching
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      document.documentElement.setAttribute('data-theme', theme);
+      document.body.setAttribute('data-theme', theme);
+    }
+  }, [theme]);
   const [wallet, setWallet] = useState<WalletState>({ isConnected: false });
   const [activeTab, setActiveTab] = useState<'vote' | 'nullifiers' | 'audit' | 'ledger' | 'network' | 'feedback' | 'admin'>('vote');
 
@@ -996,13 +1004,14 @@ export default function BallotApp() {
   );
 }
 
-// INLINE STYLES FOR SLEEK DARK THEME
+// THEME-RESPONSIVE STYLES (Powered by CSS Variables)
 const styles = {
   appContainer: {
     maxWidth: '980px',
     margin: '0 auto',
     padding: '24px 16px',
-    fontFamily: "'Inter', sans-serif"
+    fontFamily: "'Inter', sans-serif",
+    color: 'var(--text-main)'
   } as React.CSSProperties,
 
   header: {
@@ -1011,7 +1020,7 @@ const styles = {
     alignItems: 'center',
     marginBottom: '20px',
     paddingBottom: '16px',
-    borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+    borderBottom: '1px solid var(--border-color)',
     flexWrap: 'wrap' as const,
     gap: '16px'
   } as React.CSSProperties,
@@ -1036,7 +1045,7 @@ const styles = {
   brandTitle: {
     fontSize: '22px',
     fontWeight: 800,
-    background: 'linear-gradient(90deg, #f8fafc 0%, #38bdf8 100%)',
+    background: 'linear-gradient(90deg, var(--text-title) 0%, #38bdf8 100%)',
     WebkitBackgroundClip: 'text',
     WebkitTextFillColor: 'transparent',
     letterSpacing: '-0.5px'
@@ -1044,7 +1053,7 @@ const styles = {
 
   brandSubtitle: {
     fontSize: '12px',
-    color: '#94a3b8'
+    color: 'var(--text-muted)'
   } as React.CSSProperties,
 
   headerRight: {
@@ -1077,11 +1086,13 @@ const styles = {
   themeToggleBtn: {
     padding: '6px 12px',
     borderRadius: '8px',
-    border: '1px solid rgba(255, 255, 255, 0.15)',
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    color: '#f8fafc',
+    border: '1px solid var(--border-color)',
+    backgroundColor: 'var(--bg-card)',
+    color: 'var(--text-main)',
     fontSize: '12px',
-    cursor: 'pointer'
+    fontWeight: 600,
+    cursor: 'pointer',
+    boxShadow: 'var(--box-shadow)'
   } as React.CSSProperties,
 
   walletBox: {
@@ -1090,8 +1101,9 @@ const styles = {
     gap: '10px',
     padding: '6px 12px',
     borderRadius: '8px',
-    backgroundColor: 'rgba(30, 41, 59, 0.8)',
-    border: '1px solid rgba(255, 255, 255, 0.1)'
+    backgroundColor: 'var(--bg-card)',
+    border: '1px solid var(--border-color)',
+    boxShadow: 'var(--box-shadow)'
   } as React.CSSProperties,
 
   walletInfo: {
@@ -1107,7 +1119,7 @@ const styles = {
 
   walletAddress: {
     fontFamily: 'monospace',
-    color: '#94a3b8'
+    color: 'var(--text-muted)'
   } as React.CSSProperties,
 
   disconnectBtn: {
@@ -1158,10 +1170,11 @@ const styles = {
   heroCard: {
     padding: '24px',
     borderRadius: '16px',
-    backgroundColor: 'rgba(15, 23, 42, 0.8)',
-    border: '1px solid rgba(255, 255, 255, 0.1)',
+    backgroundColor: 'var(--bg-card)',
+    border: '1px solid var(--border-color)',
     marginBottom: '24px',
-    backdropFilter: 'blur(12px)'
+    backdropFilter: 'blur(12px)',
+    boxShadow: 'var(--box-shadow)'
   } as React.CSSProperties,
 
   proposalBadgeRow: {
@@ -1211,20 +1224,20 @@ const styles = {
   proposalTitle: {
     fontSize: '20px',
     fontWeight: 700,
-    color: '#f8fafc',
+    color: 'var(--text-title)',
     marginBottom: '8px',
     lineHeight: 1.4
   } as React.CSSProperties,
 
   proposalDesc: {
     fontSize: '14px',
-    color: '#94a3b8',
+    color: 'var(--text-muted)',
     marginBottom: '20px',
     lineHeight: 1.6
   } as React.CSSProperties,
 
   tallySection: {
-    borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+    borderTop: '1px solid var(--border-color)',
     paddingTop: '16px'
   } as React.CSSProperties,
 
@@ -1240,7 +1253,7 @@ const styles = {
   tallyTitle: {
     fontSize: '13px',
     fontWeight: 600,
-    color: '#cbd5e1'
+    color: 'var(--text-main)'
   } as React.CSSProperties,
 
   zkShieldBadge: {
@@ -1263,7 +1276,7 @@ const styles = {
   trackBackground: {
     width: '100%',
     height: '8px',
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    backgroundColor: 'var(--bg-main)',
     borderRadius: '4px',
     overflow: 'hidden'
   } as React.CSSProperties,
@@ -1299,15 +1312,16 @@ const styles = {
     fontWeight: 600,
     fontSize: '13px',
     cursor: 'pointer',
-    whiteSpace: 'nowrap' as const
+    whiteSpace: 'nowrap' as const,
+    boxShadow: '0 4px 12px rgba(99, 102, 241, 0.3)'
   } as React.CSSProperties,
 
   tabInactive: {
     padding: '8px 16px',
     borderRadius: '8px',
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    color: '#94a3b8',
-    border: '1px solid rgba(255, 255, 255, 0.1)',
+    backgroundColor: 'var(--bg-card)',
+    color: 'var(--text-muted)',
+    border: '1px solid var(--border-color)',
     fontWeight: 500,
     fontSize: '13px',
     cursor: 'pointer',
@@ -1317,22 +1331,23 @@ const styles = {
   tabCard: {
     padding: '24px',
     borderRadius: '16px',
-    backgroundColor: 'rgba(15, 23, 42, 0.8)',
-    border: '1px solid rgba(255, 255, 255, 0.1)',
+    backgroundColor: 'var(--bg-card)',
+    border: '1px solid var(--border-color)',
     marginBottom: '24px',
-    backdropFilter: 'blur(12px)'
+    backdropFilter: 'blur(12px)',
+    boxShadow: 'var(--box-shadow)'
   } as React.CSSProperties,
 
   sectionHeader: {
     fontSize: '18px',
     fontWeight: 700,
-    color: '#f8fafc',
+    color: 'var(--text-title)',
     marginBottom: '6px'
   } as React.CSSProperties,
 
   sectionSubtext: {
     fontSize: '13px',
-    color: '#94a3b8',
+    color: 'var(--text-muted)',
     marginBottom: '20px',
     lineHeight: 1.5
   } as React.CSSProperties,
@@ -1342,7 +1357,7 @@ const styles = {
     backgroundColor: 'rgba(16, 185, 129, 0.15)',
     border: '1px solid rgba(16, 185, 129, 0.4)',
     borderRadius: '8px',
-    color: '#6ee7b7',
+    color: '#10b981',
     fontSize: '13px',
     marginBottom: '16px'
   } as React.CSSProperties,
@@ -1352,7 +1367,7 @@ const styles = {
     backgroundColor: 'rgba(244, 63, 94, 0.15)',
     border: '1px solid rgba(244, 63, 94, 0.4)',
     borderRadius: '8px',
-    color: '#fca5a5',
+    color: '#f43f5e',
     fontSize: '13px',
     marginBottom: '16px'
   } as React.CSSProperties,
@@ -1367,8 +1382,8 @@ const styles = {
   choiceCard: {
     padding: '18px',
     borderRadius: '12px',
-    backgroundColor: 'rgba(30, 41, 59, 0.5)',
-    border: '1px solid rgba(255, 255, 255, 0.1)',
+    backgroundColor: 'var(--bg-card-hover)',
+    border: '1px solid var(--border-color)',
     cursor: 'pointer',
     position: 'relative' as const,
     transition: 'all 0.2s ease'
@@ -1402,12 +1417,12 @@ const styles = {
   choiceName: {
     fontSize: '16px',
     fontWeight: 700,
-    color: '#f8fafc'
+    color: 'var(--text-title)'
   } as React.CSSProperties,
 
   choiceDesc: {
     fontSize: '12px',
-    color: '#94a3b8',
+    color: 'var(--text-muted)',
     lineHeight: 1.5
   } as React.CSSProperties,
 
@@ -1438,8 +1453,8 @@ const styles = {
   witnessBox: {
     padding: '16px',
     borderRadius: '12px',
-    backgroundColor: 'rgba(30, 41, 59, 0.5)',
-    border: '1px solid rgba(255, 255, 255, 0.1)',
+    backgroundColor: 'var(--bg-card-hover)',
+    border: '1px solid var(--border-color)',
     marginBottom: '20px'
   } as React.CSSProperties,
 
@@ -1449,7 +1464,7 @@ const styles = {
     alignItems: 'center',
     fontSize: '13px',
     fontWeight: 600,
-    color: '#f8fafc',
+    color: 'var(--text-title)',
     marginBottom: '12px',
     flexWrap: 'wrap' as const,
     gap: '6px'
@@ -1474,7 +1489,7 @@ const styles = {
     display: 'block',
     fontSize: '11px',
     fontWeight: 600,
-    color: '#94a3b8',
+    color: 'var(--text-muted)',
     marginBottom: '4px'
   } as React.CSSProperties,
 
@@ -1482,9 +1497,9 @@ const styles = {
     width: '100%',
     padding: '8px 12px',
     borderRadius: '6px',
-    border: '1px solid rgba(255, 255, 255, 0.15)',
-    backgroundColor: 'rgba(15, 23, 42, 0.8)',
-    color: '#f8fafc',
+    border: '1px solid var(--border-color)',
+    backgroundColor: 'var(--bg-main)',
+    color: 'var(--text-main)',
     fontSize: '12px',
     fontFamily: 'monospace'
   } as React.CSSProperties,
@@ -1493,8 +1508,8 @@ const styles = {
     width: '100%',
     padding: '8px 12px',
     borderRadius: '6px',
-    border: '1px solid rgba(255, 255, 255, 0.1)',
-    backgroundColor: 'rgba(30, 41, 59, 0.5)',
+    border: '1px solid var(--border-color)',
+    backgroundColor: 'var(--bg-card)',
     color: '#38bdf8',
     fontSize: '12px',
     fontFamily: 'monospace'
@@ -1518,8 +1533,8 @@ const styles = {
     padding: '12px',
     borderRadius: '8px',
     border: 'none',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    color: '#64748b',
+    backgroundColor: 'var(--border-color)',
+    color: 'var(--text-muted)',
     fontSize: '14px',
     fontWeight: 600,
     cursor: 'not-allowed'
@@ -1536,13 +1551,14 @@ const styles = {
     marginTop: '16px',
     padding: '16px',
     borderRadius: '12px',
-    backgroundColor: 'rgba(30, 41, 59, 0.9)',
-    border: '1px solid rgba(56, 189, 248, 0.3)'
+    backgroundColor: 'var(--bg-card)',
+    border: '1px solid rgba(56, 189, 248, 0.4)',
+    boxShadow: 'var(--box-shadow)'
   } as React.CSSProperties,
 
   stepRow: {
     fontSize: '13px',
-    color: '#cbd5e1',
+    color: 'var(--text-main)',
     marginBottom: '6px'
   } as React.CSSProperties,
 
@@ -1559,7 +1575,7 @@ const styles = {
     gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
     gap: '10px',
     fontSize: '12px',
-    color: '#cbd5e1'
+    color: 'var(--text-main)'
   } as React.CSSProperties,
 
   codeHash: {
@@ -1577,8 +1593,8 @@ const styles = {
   summaryItem: {
     padding: '14px',
     borderRadius: '8px',
-    backgroundColor: 'rgba(30, 41, 59, 0.5)',
-    border: '1px solid rgba(255, 255, 255, 0.1)',
+    backgroundColor: 'var(--bg-card-hover)',
+    border: '1px solid var(--border-color)',
     display: 'flex',
     flexDirection: 'column' as const,
     gap: '4px'
@@ -1586,7 +1602,7 @@ const styles = {
 
   summaryLabel: {
     fontSize: '11px',
-    color: '#94a3b8'
+    color: 'var(--text-muted)'
   } as React.CSSProperties,
 
   summaryValue: {
@@ -1615,20 +1631,21 @@ const styles = {
     gap: '10px',
     padding: '8px 12px',
     borderRadius: '6px',
-    backgroundColor: 'rgba(30, 41, 59, 0.4)',
-    border: '1px solid rgba(255, 255, 255, 0.05)',
-    fontSize: '12px'
+    backgroundColor: 'var(--bg-card)',
+    border: '1px solid var(--border-color)',
+    fontSize: '12px',
+    color: 'var(--text-main)'
   } as React.CSSProperties,
 
   nullifierBadge: {
     fontSize: '10px',
     fontWeight: 700,
-    color: '#64748b'
+    color: 'var(--text-muted)'
   } as React.CSSProperties,
 
   nullifierCode: {
     fontFamily: 'monospace',
-    color: '#cbd5e1',
+    color: 'var(--text-main)',
     flex: 1
   } as React.CSSProperties,
 
@@ -1650,15 +1667,17 @@ const styles = {
   auditCardPublic: {
     padding: '18px',
     borderRadius: '12px',
-    backgroundColor: 'rgba(30, 41, 59, 0.5)',
-    border: '1px solid rgba(56, 189, 248, 0.2)'
+    backgroundColor: 'var(--bg-card)',
+    border: '1px solid rgba(56, 189, 248, 0.3)',
+    boxShadow: 'var(--box-shadow)'
   } as React.CSSProperties,
 
   auditCardPrivate: {
     padding: '18px',
     borderRadius: '12px',
-    backgroundColor: 'rgba(30, 41, 59, 0.5)',
-    border: '1px solid rgba(168, 85, 247, 0.2)'
+    backgroundColor: 'var(--bg-card)',
+    border: '1px solid rgba(168, 85, 247, 0.3)',
+    boxShadow: 'var(--box-shadow)'
   } as React.CSSProperties,
 
   auditList: {
@@ -1666,21 +1685,22 @@ const styles = {
     padding: 0,
     margin: 0,
     fontSize: '13px',
-    color: '#cbd5e1',
+    color: 'var(--text-main)',
     lineHeight: 1.8
   } as React.CSSProperties,
 
   infoRow: {
     padding: '12px 0',
-    borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
-    fontSize: '13px'
+    borderBottom: '1px solid var(--border-color)',
+    fontSize: '13px',
+    color: 'var(--text-main)'
   } as React.CSSProperties,
 
   infoLabel: {
     display: 'block',
     fontSize: '11px',
     fontWeight: 600,
-    color: '#94a3b8',
+    color: 'var(--text-muted)',
     marginBottom: '4px'
   } as React.CSSProperties,
 
@@ -1700,9 +1720,9 @@ const styles = {
   copyBtn: {
     padding: '3px 8px',
     fontSize: '11px',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    border: '1px solid rgba(255, 255, 255, 0.2)',
-    color: '#ffffff',
+    backgroundColor: 'var(--bg-card-hover)',
+    border: '1px solid var(--border-color)',
+    color: 'var(--text-main)',
     borderRadius: '4px',
     cursor: 'pointer'
   } as React.CSSProperties,
@@ -1752,7 +1772,7 @@ const styles = {
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.75)',
+    backgroundColor: 'rgba(0, 0, 0, 0.65)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -1764,18 +1784,19 @@ const styles = {
     width: '100%',
     maxWidth: '480px',
     padding: '24px',
-    backgroundColor: '#0f172a',
+    backgroundColor: 'var(--bg-card)',
     borderRadius: '16px',
-    border: '1px solid rgba(255, 255, 255, 0.15)',
-    boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5)'
+    border: '1px solid var(--border-color)',
+    boxShadow: 'var(--box-shadow)',
+    color: 'var(--text-main)'
   } as React.CSSProperties,
 
   closeModalBtn: {
     width: '100%',
     padding: '10px',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    border: '1px solid rgba(255, 255, 255, 0.2)',
-    color: '#ffffff',
+    backgroundColor: 'var(--bg-card-hover)',
+    border: '1px solid var(--border-color)',
+    color: 'var(--text-main)',
     borderRadius: '8px',
     fontSize: '13px',
     fontWeight: 600,
@@ -1785,8 +1806,8 @@ const styles = {
   footer: {
     textAlign: 'center' as const,
     fontSize: '12px',
-    color: '#64748b',
+    color: 'var(--text-muted)',
     padding: '20px 0',
-    borderTop: '1px solid rgba(255, 255, 255, 0.05)'
+    borderTop: '1px solid var(--border-color)'
   } as React.CSSProperties
 };
