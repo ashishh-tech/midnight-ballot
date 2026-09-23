@@ -74,16 +74,31 @@ async function main() {
         throw new Error('Please set MNEMONIC in the .env file');
     }
 
+    const privateStatePassword = process.env.PRIVATE_STATE_PASSWORD;
+    if (!privateStatePassword) {
+        throw new Error(
+            'Please set PRIVATE_STATE_PASSWORD in the .env file. ' +
+            'This is used to encrypt your local private state store. ' +
+            'Choose a strong password and do NOT hardcode it.'
+        );
+    }
+
     console.log('🔑 Generating seed from mnemonic...');
     const seedBytes = mnemonicToSeedSync(mnemonic).subarray(0, 32);
     const seed = seedBytes.toString('hex');
     
-    const indexerUrl = 'https://indexer.preprod.midnight.network/api/v4/graphql';
-    const indexerWsUrl = 'wss://indexer.preprod.midnight.network/api/v4/graphql/ws';
-    const proofServerUrl = 'http://127.0.0.1:6300';
-    const nodeUrl = 'https://rpc.preprod.midnight.network';
+    const indexerUrl = process.env.INDEXER_URL || 'https://indexer.preprod.midnight.network/api/v4/graphql';
+    const indexerWsUrl = process.env.INDEXER_WS_URL || 'wss://indexer.preprod.midnight.network/api/v4/graphql/ws';
+    const proofServerUrl = process.env.PROOF_SERVER_URL || 'http://127.0.0.1:6300';
+    const nodeUrl = process.env.RPC_NODE_URL || 'https://rpc.preprod.midnight.network';
     
     console.log('🌐 Initializing Midnight Wallet...');
+    console.log(`[INFO] NetworkId: TestNet`);
+    console.log(`[INFO] Indexer URL: ${indexerUrl}`);
+    console.log(`[INFO] Indexer WS URL: ${indexerWsUrl}`);
+    console.log(`[INFO] Proof Server URL: ${proofServerUrl}`);
+    console.log(`[INFO] RPC Node URL: ${nodeUrl}`);
+
     const wallet = await WalletBuilder.build(
         indexerUrl,
         indexerWsUrl,
@@ -103,7 +118,7 @@ async function main() {
             privateStateStoreName: 'ballot-private-state',
             midnightDbName: 'ballot-db',
             accountId: crypto.randomBytes(16).toString('hex'), 
-            privateStoragePasswordProvider: async () => 'password123Secure!@#',
+            privateStoragePasswordProvider: async () => privateStatePassword,
         }),
         publicDataProvider: indexerPublicDataProvider(indexerUrl, indexerWsUrl),
         zkConfigProvider,
@@ -116,9 +131,15 @@ async function main() {
 
     console.log('📜 Submitting deployment transaction to Preprod...');
     
+    // Admin key for managing the ballot — derived from the deployer's mnemonic
+    const adminKey = crypto.createHash('sha256').update(seedBytes).digest();
+
     const witnesses = {
         getVoterSecret: (ctx: any) => [ctx.currentPrivateState, new Uint8Array(32)],
         getVoteChoice: (ctx: any) => [ctx.currentPrivateState, 0n],
+        getNullifier: (ctx: any, _topic: any) => [ctx.currentPrivateState, new Uint8Array(32)],
+        getEligibilityProof: (ctx: any) => [ctx.currentPrivateState, new Uint8Array(32)],
+        getAdminKey: (ctx: any) => [ctx.currentPrivateState, adminKey],
     };
 
     try {
@@ -131,13 +152,25 @@ async function main() {
             args: []
         } as any);
         
+        const address = (deploymentResult as any).contractAddress
+            || (deploymentResult as any).address
+            || (deploymentResult as any).deployTxData?.public?.contractAddress
+            || JSON.stringify(deploymentResult);
+        const txHash = (deploymentResult as any).deployTxData?.txHash
+            || (deploymentResult as any).transactionId
+            || 'Check Midnight Explorer for deployment tx';
+
         console.log(`\n=================================================`);
         console.log(`✅ Contract deployed successfully!`);
-        const address = (deploymentResult as any).contractAddress || (deploymentResult as any).address || (deploymentResult as any).deployTxData?.public?.contractAddress || JSON.stringify(deploymentResult);
         console.log(`✅ Contract Address: ${address}`);
-        console.log(`=================================================\n`);
+        console.log(`✅ Deployment Tx Hash: ${txHash}`);
+        console.log(`✅ Network: Midnight Preprod Testnet`);
+        console.log(`✅ Admin Key Hash: ${adminKey.toString('hex').substring(0, 16)}...`);
+        console.log(`✅ Explorer: https://explorer.preprod.midnight.network/contract/${address}`);
+        console.log(`=================================================`);
+        console.log(`\n⚠️  IMPORTANT: Update README.md with the above contract address and tx hash!\n`);
     } catch (e) {
-        console.error('Deployment Result / Status:', e);
+        console.error('Deployment Error:', e);
     } finally {
         await wallet.close();
     }

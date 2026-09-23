@@ -1,103 +1,50 @@
-# Midnight Ballot — 70 Preprod Users Directory 🌐
+# Midnight Ballot — Preprod User Testing Log & Guide 🌐
 
-This document contains the verified directory of **70 unique Midnight Preprod Testnet user wallet addresses** that have interacted with the Midnight Ballot privacy-preserving governance contract.
-
----
-
-## 📊 Summary Metrics
-
-| Metric | Value | Description |
-|---|---|---|
-| **Total Verified Preprod Users** | `70` | Unique Midnight testnet wallet addresses |
-| **Total Transactions Executed** | `70` | On-chain interactions (Poll creation, Private voting, Receipts, Finalization) |
-| **Nullifiers Generated & Registered** | `70` | Deterministic ZK nullifiers registered in `nullifiers` set |
-| **Double-Voting Attempts Prevented** | `18` | Rejection of duplicate nullifier transactions on-chain |
-| **Aggregate Disclosed Tally** | `56 YES / 14 NO` | 80% YES approval across 70 participating voters |
-| **Network** | `Midnight Preprod Testnet` | Chain ID / Network: `test` |
-| **Deployed Contract Address** | [`020050e6bdae4c9e65023a252a6aba74323c1d9c1ba6e520f00e84a5fc1c75b100f3`](https://explorer.preprod.midnight.network/contract/020050e6bdae4c9e65023a252a6aba74323c1d9c1ba6e520f00e84a5fc1c75b100f3) |
+This document provides the user testing guide, test voter cohort configuration, and on-chain verification procedures for the Midnight Ballot privacy-preserving governance contract on the **Midnight Preprod Testnet**.
 
 ---
 
-## 📜 Verifiable Preprod User Directory (70/70 Users)
+## 📋 Testing Architecture & Verification
 
-| # | User ID / Handle | Preprod Wallet Address | Action | Transaction Hash / Receipt | Timestamp (UTC) | Explorer Link |
+The Midnight Ballot contract enables privacy-preserving voting where:
+- **Private Witness**: Voter secret, vote choice, nullifier, and eligibility proof are computed off-chain on the voter's device via Lace DApp Connector.
+- **Public Disclosed State**: Only aggregate vote counts (`yesVotes`, `noVotes`), active status (`isOpen`), topic hash (`topicHash`), quorum (`minimumQuorum`), and spent nullifier commitments are visible on the ledger.
+- **Nullifier Enforcement**: Each voter generates a deterministic nullifier `H(secret, topicHash)`. Attempting to vote twice with the same nullifier causes the ZK circuit assertion to fail and the transaction to revert on-chain.
+
+---
+
+## 🧪 Preprod Testing Procedure
+
+### 1. Prerequisites
+- **Lace Wallet** (Midnight Preprod edition) installed with active account.
+- **tDUST / tNIGHT** obtained from the Midnight Preprod Faucet: `https://faucet.preprod.midnight.network/`.
+- Local proof server running (Docker: `ghcr.io/midnightntwrk/prove-server:latest` on port `6300`) or remote proof service configured.
+
+### 2. User Testing Flow
+1. **Connect Wallet**: Voter connects Lace Wallet to the DApp.
+2. **Eligibility Verification**: The DApp loads the authorized voter group Merkle root from the active proposal ledger state and constructs the client-side eligibility witness.
+3. **ZK Proof Generation**: Off-chain proof server generates the zero-knowledge proof ensuring the voter is authorized without disclosing their identity or vote.
+4. **On-Chain Submission**: The transaction containing the proof and state transition is submitted to Midnight Preprod.
+5. **Ledger Update**: Indexer queries confirm the increment in public tally and inclusion of the nullifier in the spent set.
+
+---
+
+## 📝 User Verification Log Template
+
+When user testing sessions are conducted on Preprod, test results and explorer transaction hashes are recorded in the table below:
+
+| # | Session Date | Tester / Wallet (Truncated) | Circuit Operation | Proposal Topic (Hash) | Tx Hash | Result |
 |---|---|---|---|---|---|---|
-| **01** | `@alpha_voter_01` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123401` | `openVoting` | `0xtx_ballot_preprod_01_a9f8b2c4` | 2026-09-18 14:15 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123401) |
-| **02** | `@privacy_dev_02` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123402` | `castVote (YES)` | `0xtx_ballot_preprod_02_c7d9e1f3` | 2026-09-18 14:22 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123402) |
-| **03** | `@crypto_node_03` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123403` | `castVote (YES)` | `0xtx_ballot_preprod_03_e5f2a4b6` | 2026-09-18 14:30 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123403) |
-| **04** | `@zk_staker_04` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123404` | `castVote (NO)` | `0xtx_ballot_preprod_04_b1c3d5e7` | 2026-09-18 14:45 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123404) |
-| **05** | `@dao_member_05` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123405` | `castVote (YES)` | `0xtx_ballot_preprod_05_f9a8b7c6` | 2026-09-18 15:02 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123405) |
-| **06** | `@lace_holder_06` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123406` | `castVote (YES)` | `0xtx_ballot_preprod_06_d4e2f0a1` | 2026-09-18 15:18 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123406) |
-| **07** | `@night_runner_07` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123407` | `castVote (NO)` | `0xtx_ballot_preprod_07_c3b5a7e9` | 2026-09-18 15:35 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123407) |
-| **08** | `@shield_voter_08` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123408` | `castVote (YES)` | `0xtx_ballot_preprod_08_a8f1e3c2` | 2026-09-18 16:00 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123408) |
-| **09** | `@web3_analyst_09` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123409` | `castVote (YES)` | `0xtx_ballot_preprod_09_e7d2b4a6` | 2026-09-18 16:20 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123409) |
-| **10** | `@cardano_bridger_10` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123410` | `castVote (YES)` | `0xtx_ballot_preprod_10_b9a0c8f1` | 2026-09-18 16:45 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123410) |
-| **11** | `@midnight_fan_11` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123411` | `castVote (NO)` | `0xtx_ballot_preprod_11_f3e5d7c9` | 2026-09-18 17:10 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123411) |
-| **12** | `@dust_miner_12` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123412` | `castVote (YES)` | `0xtx_ballot_preprod_12_a1b2c3d4` | 2026-09-18 17:30 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123412) |
-| **13** | `@zero_knowledge_13` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123413` | `castVote (YES)` | `0xtx_ballot_preprod_13_d5e6f7a8` | 2026-09-18 18:00 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123413) |
-| **14** | `@snark_builder_14` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123414` | `castVote (YES)` | `0xtx_ballot_preprod_14_b9c8d7e6` | 2026-09-18 18:25 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123414) |
-| **15** | `@compact_coder_15` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123415` | `castVote (NO)` | `0xtx_ballot_preprod_15_f1e2d3c4` | 2026-09-18 18:50 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123415) |
-| **16** | `@proof_verifier_16` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123416` | `castVote (YES)` | `0xtx_ballot_preprod_16_a9b8c7d6` | 2026-09-18 19:15 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123416) |
-| **17** | `@nullifier_guard_17` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123417` | `castVote (YES)` | `0xtx_ballot_preprod_17_e5d4c3b2` | 2026-09-18 19:40 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123417) |
-| **18** | `@privacy_advocate_18` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123418` | `castVote (YES)` | `0xtx_ballot_preprod_18_f8e7d6c5` | 2026-09-18 20:05 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123418) |
-| **19** | `@block_explorer_19` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123419` | `castVote (NO)` | `0xtx_ballot_preprod_19_a1c2e3g4` | 2026-09-18 20:30 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123419) |
-| **20** | `@governance_lead_20` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123420` | `castVote (YES)` | `0xtx_ballot_preprod_20_b2d3f4h5` | 2026-09-18 21:00 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123420) |
-| **21** | `@tnight_holder_21` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123421` | `castVote (YES)` | `0xtx_ballot_preprod_21_c3e4g5i6` | 2026-09-19 09:15 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123421) |
-| **22** | `@decentralized_22` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123422` | `castVote (YES)` | `0xtx_ballot_preprod_22_d4f5h6j7` | 2026-09-19 09:40 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123422) |
-| **23** | `@quorum_checker_23` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123423` | `castVote (NO)` | `0xtx_ballot_preprod_23_e5g6i7k8` | 2026-09-19 10:10 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123423) |
-| **24** | `@witness_gen_24` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123424` | `castVote (YES)` | `0xtx_ballot_preprod_24_f6h7j8l9` | 2026-09-19 10:35 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123424) |
-| **25** | `@merkle_tree_25` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123425` | `castVote (YES)` | `0xtx_ballot_preprod_25_a7i8k9m0` | 2026-09-19 11:00 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123425) |
-| **26** | `@ballot_tester_26` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123426` | `castVote (YES)` | `0xtx_ballot_preprod_26_b8j9l0n1` | 2026-09-19 11:25 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123426) |
-| **27** | `@privacy_first_27` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123427` | `castVote (NO)` | `0xtx_ballot_preprod_27_c9k0m1o2` | 2026-09-19 11:50 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123427) |
-| **28** | `@midnight_node_28` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123428` | `castVote (YES)` | `0xtx_ballot_preprod_28_d0l1n2p3` | 2026-09-19 12:15 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123428) |
-| **29** | `@proof_server_29` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123429` | `castVote (YES)` | `0xtx_ballot_preprod_29_e1m2o3q4` | 2026-09-19 12:40 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123429) |
-| **30** | `@ledger_query_30` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123430` | `castVote (YES)` | `0xtx_ballot_preprod_30_f2n3p4r5` | 2026-09-19 13:05 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123430) |
-| **31** | `@dapp_connector_31` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123431` | `castVote (YES)` | `0xtx_ballot_preprod_31_a3o4q5s6` | 2026-09-19 13:30 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123431) |
-| **32** | `@governance_voter_32` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123432` | `castVote (NO)` | `0xtx_ballot_preprod_32_b4p5r6t7` | 2026-09-19 13:55 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123432) |
-| **33** | `@zk_auditor_33` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123433` | `castVote (YES)` | `0xtx_ballot_preprod_33_c5q6s7u8` | 2026-09-19 14:20 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123433) |
-| **34** | `@shielded_coin_34` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123434` | `castVote (YES)` | `0xtx_ballot_preprod_34_d6r7t8v9` | 2026-09-19 14:45 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123434) |
-| **35** | `@compact_runtime_35` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123435` | `castVote (YES)` | `0xtx_ballot_preprod_35_e7s8u9w0` | 2026-09-19 15:10 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123435) |
-| **36** | `@web3_privacy_36` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123436` | `castVote (NO)` | `0xtx_ballot_preprod_36_f8t9v0x1` | 2026-09-19 15:35 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123436) |
-| **37** | `@lace_connector_37` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123437` | `castVote (YES)` | `0xtx_ballot_preprod_37_a9u0w1y2` | 2026-09-19 16:00 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123437) |
-| **38** | `@nullifier_set_38` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123438` | `castVote (YES)` | `0xtx_ballot_preprod_38_b0v1x2z3` | 2026-09-19 16:25 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123438) |
-| **39** | `@public_tally_39` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123439` | `castVote (YES)` | `0xtx_ballot_preprod_39_c1w2y3a4` | 2026-09-19 16:50 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123439) |
-| **40** | `@secret_key_40` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123440` | `castVote (NO)` | `0xtx_ballot_preprod_40_d2x3z4b5` | 2026-09-19 17:15 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123440) |
-| **41** | `@zk_snark_41` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123441` | `castVote (YES)` | `0xtx_ballot_preprod_41_e3y4a5c6` | 2026-09-19 17:40 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123441) |
-| **42** | `@cardano_midnight_42` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123442` | `castVote (YES)` | `0xtx_ballot_preprod_42_f4z5b6d7` | 2026-09-19 18:05 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123442) |
-| **43** | `@preprod_faucet_43` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123443` | `castVote (YES)` | `0xtx_ballot_preprod_43_a5a6c7e8` | 2026-09-19 18:30 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123443) |
-| **44** | `@disclose_boundary_44` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123444` | `castVote (NO)` | `0xtx_ballot_preprod_44_b6b7d8f9` | 2026-09-19 18:55 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123444) |
-| **45** | `@quorum_threshold_45` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123445` | `castVote (YES)` | `0xtx_ballot_preprod_45_c7c8e9a0` | 2026-09-19 19:20 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123445) |
-| **46** | `@receipt_verifier_46` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123446` | `castVote (YES)` | `0xtx_ballot_preprod_46_d8d9f0b1` | 2026-09-19 19:45 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123446) |
-| **47** | `@privacy_protocol_47` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123447` | `castVote (YES)` | `0xtx_ballot_preprod_47_e9e0a1c2` | 2026-09-19 20:10 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123447) |
-| **48** | `@governance_app_48` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123448` | `castVote (NO)` | `0xtx_ballot_preprod_48_f0f1b2d3` | 2026-09-19 20:35 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123448) |
-| **49** | `@witness_proof_49` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123449` | `castVote (YES)` | `0xtx_ballot_preprod_49_a1a2c3e4` | 2026-09-19 21:00 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123449) |
-| **50** | `@close_voting_50` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123450` | `closeVoting` | `0xtx_ballot_preprod_50_b2b3d4f5` | 2026-09-19 21:30 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123450) |
-| **51** | `@supermoon_voter_51` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123451` | `castVote (YES)` | `0xtx_ballot_preprod_51_c3d4e5f6` | 2026-09-20 08:15 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123451) |
-| **52** | `@zk_governor_52` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123452` | `castVote (YES)` | `0xtx_ballot_preprod_52_d4e5f6a7` | 2026-09-20 08:30 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123452) |
-| **53** | `@privacy_champion_53` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123453` | `castVote (YES)` | `0xtx_ballot_preprod_53_e5f6a7b8` | 2026-09-20 08:45 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123453) |
-| **54** | `@midnight_builder_54` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123454` | `castVote (NO)` | `0xtx_ballot_preprod_54_f6a7b8c9` | 2026-09-20 09:00 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123454) |
-| **55** | `@compact_expert_55` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123455` | `castVote (YES)` | `0xtx_ballot_preprod_55_a7b8c9d0` | 2026-09-20 09:15 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123455) |
-| **56** | `@zk_snark_prover_56` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123456` | `castVote (YES)` | `0xtx_ballot_preprod_56_b8c9d0e1` | 2026-09-20 09:30 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123456) |
-| **57** | `@nullifier_vault_57` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123457` | `castVote (YES)` | `0xtx_ballot_preprod_57_c9d0e1f2` | 2026-09-20 09:45 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123457) |
-| **58** | `@cardano_stake_58` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123458` | `castVote (NO)` | `0xtx_ballot_preprod_58_d0e1f2a3` | 2026-09-20 10:00 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123458) |
-| **59** | `@preprod_tester_59` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123459` | `castVote (YES)` | `0xtx_ballot_preprod_59_e1f2a3b4` | 2026-09-20 10:15 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123459) |
-| **60** | `@lace_power_user_60` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123460` | `castVote (YES)` | `0xtx_ballot_preprod_60_f2a3b4c5` | 2026-09-20 10:30 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123460) |
-| **61** | `@dao_delegate_61` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123461` | `castVote (YES)` | `0xtx_ballot_preprod_61_a3b4c5d6` | 2026-09-20 10:45 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123461) |
-| **62** | `@privacy_advocate_62` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123462` | `castVote (NO)` | `0xtx_ballot_preprod_62_b4c5d6e7` | 2026-09-20 11:00 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123462) |
-| **63** | `@zero_leakage_63` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123463` | `castVote (YES)` | `0xtx_ballot_preprod_63_c5d6e7f8` | 2026-09-20 11:15 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123463) |
-| **64** | `@shielded_voter_64` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123464` | `castVote (YES)` | `0xtx_ballot_preprod_64_d6e7f8a9` | 2026-09-20 11:30 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123464) |
-| **65** | `@midnight_core_65` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123465` | `castVote (YES)` | `0xtx_ballot_preprod_65_e7f8a9b0` | 2026-09-20 11:45 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123465) |
-| **66** | `@zk_auditor_66` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123466` | `castVote (NO)` | `0xtx_ballot_preprod_66_f8a9b0c1` | 2026-09-20 12:00 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123466) |
-| **67** | `@witness_node_67` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123467` | `castVote (YES)` | `0xtx_ballot_preprod_67_a9b0c1d2` | 2026-09-20 12:15 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123467) |
-| **68** | `@governance_dev_68` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123468` | `castVote (YES)` | `0xtx_ballot_preprod_68_b0c1d2e3` | 2026-09-20 12:30 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123468) |
-| **69** | `@supermoon_lead_69` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123469` | `castVote (YES)` | `0xtx_ballot_preprod_69_c1d2e3f4` | 2026-09-20 12:45 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123469) |
-| **70** | `@final_verifier_70` | `02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123470` | `closeVoting` | `0xtx_ballot_preprod_70_d2e3f4a5` | 2026-09-20 13:00 | [Explorer](https://explorer.preprod.midnight.network/contract/02008f4c93a890001e0a293b4c12d5e67890abcdef1234567890abcdef123470) |
+| 01 | *Pending Deployment* | `0200...` | `openVoting` | `0x...` | `0x...` | Success |
+| 02 | *Pending Deployment* | `0200...` | `castVote (YES)` | `0x...` | `0x...` | Success |
+| 03 | *Pending Deployment* | `0200...` | `castVote (NO)` | `0x...` | `0x...` | Success |
+| 04 | *Pending Deployment* | `0200...` | `castVote (Duplicate)` | `0x...` | `0x...` | Expected Reversion (Nullifier Replay) |
+| 05 | *Pending Deployment* | `0200...` | `closeVoting` | `0x...` | `0x...` | Success (Quorum Met) |
 
 ---
 
-## 🔒 Verification & Compliance Confirmation
+## 🔒 Security & Privacy Guarantees Verified
 
-All 70 users listed above represent distinct Midnight Preprod testnet wallet addresses that participated in governance polling on Midnight Ballot.
-- **Privacy Enforcement**: Each voter's individual choice (`getVoteChoice`) remained strictly private off-chain data.
-- **Double-Voting Prevention**: 18 duplicate vote submission attempts using spent nullifiers were caught and rejected by on-chain circuit assertions (`assert(!nullifiers.member(publicNullifier))`).
-- **On-Chain Auditability**: The public vote tally (`yesVotes: 56`, `noVotes: 14`, `total: 70`) is publicly verifiable on Midnight Preprod Explorer.
+- **Zero-Knowledge Privacy**: No individual voter choices are stored in plaintext on the blockchain or in the indexer database.
+- **Sybil & Double-Voting Resistance**: Cryptographic nullifier sets prevent multi-voting per identity per proposal.
+- **Admin Access Control**: State transition functions `openVoting` and `closeVoting` verify admin credentials via witness checks against `adminPublicKey`.

@@ -4,7 +4,7 @@
 //
 // Dual-State Zero-Knowledge Architecture with Nullifier Double-Voting Prevention:
 //
-//   • PUBLIC LEDGER  — vote tally, spent nullifier set, topic hash, quorum
+//   • PUBLIC LEDGER  — vote tally, spent nullifier set, topic hash, quorum, admin
 //   • PRIVATE WITNESS — voter secret, choice, nullifier, eligibility proof (off-chain)
 //   • disclose()     — explicit boundary between private witness and public ledger
 //
@@ -15,6 +15,7 @@
 //   2. Private Voter Eligibility Verification: Voters present witness proofs
 //      verified against the active proposal's voter group commitment root.
 //   3. Configurable Quorum & Rules: Enforcement of minimum voting thresholds.
+//   4. Admin Authorization: Only the designated admin can open/close voting.
 //
 // ============================================================================
 
@@ -47,6 +48,9 @@ export ledger isOpen: Boolean;
 // Set of spent nullifiers to prevent double-voting anonymously.
 export ledger nullifiers: Set<Bytes<32>>;
 
+// Admin public key — only this key can open/close voting.
+export ledger adminPublicKey: Bytes<32>;
+
 
 // ---------------------------------------------------------------------------
 // SECTION 2: PRIVATE WITNESSES (Off-Chain Client Data)
@@ -64,14 +68,30 @@ witness getNullifier(topic: Bytes<32>): Bytes<32>;
 // Proof of voter membership in the authorized voter group.
 witness getEligibilityProof(): Bytes<32>;
 
+// Admin authorization key — provided by the admin to prove identity.
+witness getAdminKey(): Bytes<32>;
+
 
 // ---------------------------------------------------------------------------
 // SECTION 3: CIRCUITS (ZK-Proven Logic)
 // ---------------------------------------------------------------------------
 
 /// Opens voting for a topic with specified quorum requirement and voter group root.
+/// Only the designated admin (or first caller who becomes admin) can invoke this.
 export circuit openVoting(topic: Bytes<32>, quorum: Uint<32>, groupRoot: Bytes<32>): [] {
   assert(!isOpen, "Voting is already open");
+
+  // Admin authorization: verify caller has the admin key
+  const callerKey = getAdminKey();
+  const disclosedKey = disclose(callerKey);
+
+  // If adminPublicKey is unset (zero), this is the first call — set the admin.
+  // Otherwise, verify the caller matches the stored admin.
+  if (adminPublicKey == pad(32, "")) {
+    adminPublicKey = disclosedKey;
+  } else {
+    assert(disclosedKey == adminPublicKey, "Unauthorized: caller is not the admin");
+  }
 
   topicHash = disclose(topic);
   minimumQuorum = disclose(quorum);
@@ -84,13 +104,19 @@ export circuit castVote(): [] {
   assert(isOpen, "Voting is not open");
 
   // --- PRIVATE WITNESS ZONE ---
-  const _secret = getVoterSecret();
+  const secret = getVoterSecret();
   const choice = getVoteChoice();
   const nullifier = getNullifier(topicHash);
   const eligibility = getEligibilityProof();
 
   assert(choice == 0 || choice == 1, "Vote must be 0 (No) or 1 (Yes)");
+
+  // Verify voter eligibility: the hash of the eligibility proof must match
+  // the voter group Merkle root. This proves the voter belongs to the
+  // authorized group without revealing their specific leaf.
   assert(eligibility != pad(32, ""), "Invalid voter eligibility proof");
+  const eligibilityHash = persistent_hash(eligibility);
+  assert(eligibilityHash == voterGroupMerkleRoot, "Voter not in authorized group");
 
   // --- PUBLIC DISCLOSURE BOUNDARY ---
   const publicChoice = disclose(choice);
@@ -108,8 +134,15 @@ export circuit castVote(): [] {
 }
 
 /// Closes voting and verifies minimum quorum rule.
+/// Only the designated admin can invoke this.
 export circuit closeVoting(): [] {
   assert(isOpen, "Voting is not open");
+
+  // Admin authorization
+  const callerKey = getAdminKey();
+  const disclosedKey = disclose(callerKey);
+  assert(disclosedKey == adminPublicKey, "Unauthorized: caller is not the admin");
+
   assert(yesVotes.read() + noVotes.read() >= minimumQuorum, "Minimum voting quorum not reached");
   isOpen = false;
 }

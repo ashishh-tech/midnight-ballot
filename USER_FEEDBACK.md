@@ -1,81 +1,44 @@
-# Midnight Ballot — Structured User Feedback Loop 🔄
+# Midnight Ballot — User Testing & Feedback Framework 🔄
 
-This document details the **structured user feedback loop** established for **Level 6 (Supermoon Submission)** for Midnight Ballot across **70 Preprod testnet users**.
-
----
-
-## 📈 Quantitative Satisfaction Metrics (70 Users)
-
-| UX Dimension | Score (out of 5.0) | Satisfaction Rate | Key Feedback Theme |
-|---|---|---|---|
-| **Privacy Confidence** | `4.92 / 5.0` | 98.4% | Users appreciated seeing exact cryptographic proof of what stays private vs public. |
-| **Lace Wallet Connector** | `4.85 / 5.0` | 97.0% | Seamless DApp connector connection with Midnight Lace Wallet and fallback demo. |
-| **Vote Receipt Verification** | `4.94 / 5.0` | 98.8% | Cryptographic receipt generated per vote built trust in ZK proofs. |
-| **Transaction Speed & UI** | `4.80 / 5.0` | 96.0% | Fast proof generation and intuitive dark/light mode visualizer. |
-| **Overall Recommendation** | `4.88 / 5.0` | 97.6% | Highly likely to recommend Midnight Ballot for DAO governance polls. |
+This document outlines the user feedback framework, user experience evaluation criteria, and product refinement roadmap for the Midnight Ballot privacy-preserving governance application.
 
 ---
 
-## 🗣️ Qualitative User Testimonials & Feedback (70 Users Sample)
+## 🎯 Evaluation Dimensions
 
-> **"The explicit boundary showing private witness data vs public ledger disclosed fields is the best ZK explanation I've seen in Web3."**  
-> — `@zk_auditor_33` (Security Researcher)
+During user testing of the Midnight Ballot DApp, participants evaluate the system across five key criteria:
 
-> **"I tried submitting a second vote with the same nullifier from a different browser session — the contract instantly rejected it on-chain with a clear double-voting error. Super impressive!"**  
-> — `@nullifier_guard_17` (DAO Operations)
-
-> **"Connecting Lace Wallet and casting an anonymous vote took less than 10 seconds. The vote receipt feature gives great peace of mind."**  
-> — `@lace_holder_06` (Community Member)
-
-> **"The 70 Preprod users explorer directory makes it transparent to verify every single transaction without revealing individual voter secrets."**  
-> — `@supermoon_lead_69` (Midnight Ecosystem Builder)
-
-> **"The Circuit Admin panel lets us simulate both openVoting and closeVoting with minimum quorum validation directly in the UI."**  
-> — `@zk_governor_52` (Governance Delegate)
+| UX Dimension | Focus Area | Evaluation Criteria |
+|---|---|---|
+| **Privacy Transparency** | ZK Witness Boundaries | Clear visual distinction between client-side private witnesses and on-chain public state |
+| **Wallet Integration** | Lace DApp Connector | Reliable connection flow with Midnight Lace Wallet without requiring mock or fallback modes |
+| **Proof Generation Speed** | Client Proving | Responsive proof calculation feedback and transaction state progression |
+| **Double-Vote Protection** | Nullifier Rejection | Clear error signaling when an identical voter identity / nullifier attempts multiple submissions |
+| **Admin Operations** | Quorum & Lifecycle | Streamlined proposal initialization and tally closure with quorum validation |
 
 ---
 
-## 🛠️ Prioritized Product Backlog & Implemented Improvements
+## 📋 User Testing Survey Template
 
-Based on direct user feedback from our 70 Preprod testers, we prioritized and implemented key product refinements:
+When conducting testing sessions with community participants, responses are collected using the following structure:
 
-### 1. Implemented Improvements (Level 6)
-- [x] **70 Preprod Users Directory & Search**: Expanded on-chain explorer tab in the web UI allowing users to search and verify receipts across all 70 preprod user transactions.
-- [x] **Interactive Feedback Widget**: Embedded rating & feedback modal directly inside the frontend web application with live aggregate rating display.
-- [x] **Circuit Admin Tab**: Integrated `openVoting()` and `closeVoting()` circuit call handlers directly into the frontend.
-- [x] **Enhanced Nullifier Status Visualizer**: Visual warning badge when attempting to re-use an existing nullifier.
-- [x] **Dark/Light Mode Contrast Refinements**: High-contrast theme toggle for improved accessibility.
-
-### 2. High-Priority Future Backlog
-- [ ] **Multi-Option Voting**: Support for multi-choice proposals (Option A, B, C, D) in addition to Binary (Yes/No).
-- [ ] **Weighted Governance Power**: Enable token-weighted ZK voting (e.g. proof of balance commitment without revealing exact balance).
-- [ ] **Automated Faucet Dripper**: Direct integration with Midnight Preprod faucet inside the wallet panel for new testnet users.
+1. **Wallet Connection**: Was the Lace connection prompt clear and immediate? (1-5)
+2. **Proving Experience**: Was the progress indicator during ZK proof generation informative? (1-5)
+3. **Transaction Clarity**: Did the receipt clearly distinguish private witness data from public counters? (1-5)
+4. **Error Handling**: When testing edge cases (e.g., closed voting, double voting), was the error descriptive? (1-5)
+5. **Qualitative Notes & Feature Requests**: Open feedback for roadmap prioritization.
 
 ---
 
-## 🔄 Feedback Loop Cycle & Methodology
+## 🛠️ Product Refinement Roadmap
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│ 1. USER ONBOARDING                                          │
-│    Connect Lace Wallet on Preprod & review witness inputs    │
-└──────────────────────────────┬──────────────────────────────┘
-                               │
-                               ▼
-┌─────────────────────────────────────────────────────────────┐
-│ 2. PRIVATE VOTE EXECUTION                                   │
-│    ZK Proof generation & nullifier registration             │
-└──────────────────────────────┬──────────────────────────────┘
-                               │
-                               ▼
-┌─────────────────────────────────────────────────────────────┐
-│ 3. IN-APP FEEDBACK CAPTURE                                  │
-│    1-5 Star rating, category tag, and feature suggestions   │
-└──────────────────────────────┬──────────────────────────────┘
-                               │
-                               ▼
-┌─────────────────────────────────────────────────────────────┐
-│ 4. ITERATIVE IMPROVEMENT                                    │
-│    Prioritize product backlog & deploy verified fixes       │
-└─────────────────────────────────────────────────────────────┘
-```
+### Current Focus
+- [x] **Strict DApp Connector Integration**: Seamless connection to Midnight Lace Wallet with clear setup prompts if the extension is absent.
+- [x] **Full 4-Witness Client Generation**: Complete witness provider implementation (`getVoterSecret`, `getVoteChoice`, `getNullifier`, `getEligibilityProof`).
+- [x] **Deterministic Nullifier Derivation**: On-chain and off-chain nullifier alignment to prevent double-voting.
+- [x] **Live Indexer State Polling**: Real-time tally and status synchronization from the Midnight Indexer.
+
+### Future Enhancements
+- [ ] **Multi-Choice Proposals**: Support for arbitrary N-way ballots beyond binary Yes/No.
+- [ ] **Token-Weighted ZK Voting**: Private balance-commitment proofs for stake-weighted governance.
+- [ ] **Batch Merkle Tree Updates**: Dynamic voter registry commitment updates for rolling membership changes.

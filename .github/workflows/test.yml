@@ -23,7 +23,10 @@ jobs:
       - name: Install Root Dependencies
         run: npm install --legacy-peer-deps
 
-      - name: Run Contract Unit Tests
+      - name: Check TypeScript Compilation
+        run: npx tsc --noEmit
+
+      - name: Run Compact Circuit & Contract Unit Tests
         run: npx vitest run
 
       - name: Install Frontend Dependencies
