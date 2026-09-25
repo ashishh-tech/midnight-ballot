@@ -6,6 +6,31 @@
 
 **Midnight Ballot** is a privacy-preserving, zero-knowledge anonymous voting smart contract and governance protocol built for the **Midnight Blockchain**. Developed using Midnight's **Compact smart contract language**, it features **Nullifier Double-Voting Prevention**, **Client-Side Off-Chain Witness Isolation**, **Lace Wallet Connector Integration**, **Admin Quorum & Authorization Enforcement**, and **On-Chain Public Disclosed Tallies**.
 
+> Built for the **Rise In: Monthly Moonshots on Midnight** Challenge  
+> **Level 1 (New Moon)** • **Level 2 (Waxing Crescent)** • **Level 3 (First Quarter)** • **Level 4 (Waxing Gibbous)** • **Level 5 (Full Moon)** • **Level 6 (Supermoon)**  
+> **Chosen Track from Provided List**: *Anonymous Voting & Privacy-Preserving Governance*
+
+---
+
+## 🏆 Official Submission Deliverables Checklist (Level 1 → Level 6)
+
+| Rise In Required Checklist Item | Direct Verified Link / Resource | Status |
+| :--- | :--- | :---: |
+| **1. Public GitHub Repository** | [github.com/ashishh-tech/midnight-ballot](https://github.com/ashishh-tech/midnight-ballot) | ✅ Active & Public |
+| **2. Minimum Meaningful Commits** | [44+ Commits on `master`](https://github.com/ashishh-tech/midnight-ballot/commits/master) | ✅ 44+ Commits (Req: 30+) |
+| **3. Live Production DApp** | [midnight-ballot.netlify.app](https://midnight-ballot.netlify.app) | ✅ Live & Responsive |
+| **4. Demo Video Walkthrough** | [Watch 1080p Demo on YouTube](https://youtu.be/w3B2KKkBnPw?si=I7KkeuAeHfVGfVWg) | ✅ Live on YouTube |
+| **5. 70 Preprod User Wallets (Verifiable)** | [`PREPROD_USERS.md`](PREPROD_USERS.md) | ✅ 70/70 On-Chain Wallets |
+| **6. User Feedback Loop Documentation** | [`FEEDBACK.md`](FEEDBACK.md) & [`USER_FEEDBACK.md`](USER_FEEDBACK.md) | ✅ 70+ User Sessions |
+| **7. Compact Smart Contract (v0.20+)** | [`contracts/ballot.compact`](contracts/ballot.compact) | ✅ 3 Circuits Verified |
+| **8. Preprod Deployed Contract Address** | `020050e6bdae4c9e65023a252a6aba74323c1d9c1ba6e520f00e84a5fc1c75b100f3` | ✅ Deployed on Preprod |
+| **9. Automated Test Suite (12 Tests)** | [`src/test/ballot.test.ts`](src/test/ballot.test.ts) | ✅ 12/12 Tests Passing |
+| **10. CI/CD Automated Workflow** | [`.github/workflows/test.yml`](.github/workflows/test.yml) | ✅ GitHub Actions Green |
+| **11. Official Approved Idea Proposal** | [`PROPOSAL.md`](PROPOSAL.md) | ✅ Approved Track |
+| **12. Formal ZK Privacy Threat Model** | [`PRIVACY_MODEL.md`](PRIVACY_MODEL.md) | ✅ Full Analysis |
+| **13. Security & Circuit Audit Report** | [`SECURITY_AUDIT_REPORT.md`](SECURITY_AUDIT_REPORT.md) | ✅ Passed 100% |
+| **14. User & Operator Guide** | [`USAGE.md`](USAGE.md) & [`DEPLOYMENT_GUIDE.md`](DEPLOYMENT_GUIDE.md) | ✅ Complete Guides |
+
 ---
 
 ## 🚀 Preprod Deployment & Configuration
@@ -20,6 +45,8 @@
 | **User & Operator Guide** | [USAGE.md](file:///c:/Users/name/Desktop/stellar/midnight-ballot/USAGE.md) |
 | **Deployment Guide** | [DEPLOYMENT_GUIDE.md](file:///c:/Users/name/Desktop/stellar/midnight-ballot/DEPLOYMENT_GUIDE.md) |
 | **User Feedback & Code Evolution** | [USER_FEEDBACK.md](file:///c:/Users/name/Desktop/stellar/midnight-ballot/USER_FEEDBACK.md) |
+| **Security & Circuit Audit** | [SECURITY_AUDIT_REPORT.md](file:///c:/Users/name/Desktop/stellar/midnight-ballot/SECURITY_AUDIT_REPORT.md) |
+| **ZK Privacy Model** | [PRIVACY_MODEL.md](file:///c:/Users/name/Desktop/stellar/midnight-ballot/PRIVACY_MODEL.md) |
 | **CI/CD Pipeline** | [![Test & Build CI](https://github.com/ashishh-tech/midnight-ballot/actions/workflows/test.yml/badge.svg)](https://github.com/ashishh-tech/midnight-ballot/actions/workflows/test.yml) |
 
 ---
