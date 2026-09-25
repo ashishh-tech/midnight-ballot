@@ -15,11 +15,26 @@
 | **Network** | **Midnight Preprod Testnet** (Chain ID: `test`) |
 | **Contract Source** | [`contracts/ballot.compact`](file:///c:/Users/name/Desktop/stellar/midnight-ballot/contracts/ballot.compact) |
 | **Live Web App Demo** | [https://midnight-ballot.netlify.app](https://midnight-ballot.netlify.app) |
+| **Video Demonstration** | [🎬 Watch YouTube Walkthrough](https://youtu.be/w3B2KKkBnPw?si=I7KkeuAeHfVGfVWg) |
 | **Preprod Block Explorer** | [Midnight Preprod Explorer](https://explorer.preprod.midnight.network) |
 | **User & Operator Guide** | [USAGE.md](file:///c:/Users/name/Desktop/stellar/midnight-ballot/USAGE.md) |
 | **Deployment Guide** | [DEPLOYMENT_GUIDE.md](file:///c:/Users/name/Desktop/stellar/midnight-ballot/DEPLOYMENT_GUIDE.md) |
 | **User Feedback & Code Evolution** | [USER_FEEDBACK.md](file:///c:/Users/name/Desktop/stellar/midnight-ballot/USER_FEEDBACK.md) |
 | **CI/CD Pipeline** | [![Test & Build CI](https://github.com/ashishh-tech/midnight-ballot/actions/workflows/test.yml/badge.svg)](https://github.com/ashishh-tech/midnight-ballot/actions/workflows/test.yml) |
+
+---
+
+## 📹 Video Walkthrough: Wallet Connect & Circuit Calls
+
+[![Midnight Ballot Video Demo](https://img.youtube.com/vi/w3B2KKkBnPw/maxresdefault.jpg)](https://youtu.be/w3B2KKkBnPw?si=I7KkeuAeHfVGfVWg)
+
+> 📺 **Watch Full Walkthrough:** [https://youtu.be/w3B2KKkBnPw](https://youtu.be/w3B2KKkBnPw?si=I7KkeuAeHfVGfVWg)
+
+### Demonstrated Features:
+- **Lace Wallet Connector**: Connecting Midnight DApp connector / Lace wallet with network status verification.
+- **Client-Side Witness Isolation**: Private witness generation keeping vote choices & voter secrets locally isolated.
+- **ZK Circuit Execution (`castVote`)**: Execution of zero-knowledge circuit proofs with Midnight proof server integration.
+- **On-Chain Confirmation**: Transaction broadcast and state updates (spent nullifier registration + public counter increment).
 
 ---
 
