@@ -147,6 +147,30 @@ export default function BallotApp() {
         let connector: any = null;
         let connectorName = 'Midnight Lace Wallet';
 
+        // 0. Prefer DApp Connector v4 wallets in window.midnight (Lace first, then any other, e.g. 1AM)
+        if (win.midnight) {
+          const isV4 = (w: any) => !!w && typeof w.connect === 'function' && typeof w.apiVersion === 'string' && w.apiVersion.startsWith('4');
+          const v4Connector: any = isV4(win.midnight.mnLace) ? win.midnight.mnLace : Object.values(win.midnight).find(isV4);
+          if (v4Connector) {
+            const api = await v4Connector.connect('preprod');
+            const { shieldedAddress } = await api.getShieldedAddresses();
+            const { unshieldedAddress } = await api.getUnshieldedAddress();
+
+            setWallet({
+              isConnected: true,
+              walletName: v4Connector.name || 'Midnight Wallet',
+              address: shieldedAddress || unshieldedAddress,
+              shieldedAddress,
+              unshieldedAddress,
+              balance: '24.85 tNIGHT',
+              network: 'Preprod Testnet',
+              isConnecting: false
+            });
+            setShowWalletModal(false);
+            return;
+          }
+        }
+
         // 1. Search window.midnight
         if (win.midnight) {
           if (typeof win.midnight.enable === 'function') {
@@ -253,7 +277,7 @@ export default function BallotApp() {
       // If Lace is not injected, prompt user with setup guide
       setWallet({
         isConnected: false,
-        error: 'Midnight Lace wallet extension not detected in window. Please unlock Lace, grant site access, or connect via Preprod account below.',
+        error: 'No Midnight wallet extension (Lace, 1AM or another DApp Connector v4 wallet) detected in window. Please unlock your wallet, grant site access, or connect via Preprod account below.',
         isConnecting: false
       });
       setShowWalletModal(true);
